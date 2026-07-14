@@ -31,6 +31,14 @@ New standing rule from user: no per-tx confirmation below $3; cost card + TAK ab
   - mint 250,000 BALT: [`0xd166dcc7…a6db`](https://basescan.org/tx/0xd166dcc7c7d4bba657358f54d5aa8b6f12bb8b9a486cb1c08dcfaeaf1815a6db)
   - Verified state: supply 250k / cap 1M / initialized ✅. All dry-run via `eth_call` first.
 - Total cost of the 3 txs ≈ 0.000006 ETH incl. L1 (deployer balance 0.007662 ETH).
+
+## 2026-07-14 — MAINNET: Amberboard app + contracts + AmberMind #59020
+
+- **AmberBoard** [`0x57E637fcC76B9d2c08E15F6C3e21c4cF77289637`](https://basescan.org/address/0x57E637fcC76B9d2c08E15F6C3e21c4cF77289637) (deploy [`0xe3ce6edf…7bf2`](https://basescan.org/tx/0xe3ce6edfce02d844845d26830d0bc9070984e6da29ea55c9fceda1b4b1547bf2)) and **AmberCubes** [`0x3C509A043C370b79bBd2F15fd5700a8695e348Ff`](https://basescan.org/address/0x3C509A043C370b79bBd2F15fd5700a8695e348Ff) (deploy [`0xc608de61…6a93a`](https://basescan.org/tx/0xc608de61398894798f41c38deb8693340bd2645b28f8f87d273ff246a5d6a93a)) — both verified on **BaseScan and Blockscout** (Blockscout v2 API with `autodetect_constructor_args=true` — verified in ~30 s).
+- Board seeded: 3 × cheer ([1](https://basescan.org/tx/0x40e1e807e104c01ac8e246a453f378448a8c79dc9952a00bee73e330faf20452), [2](https://basescan.org/tx/0x666b6d5f633701f44185ba39a84c02774fe11ad999a07b7f82f5961294722597), [3](https://basescan.org/tx/0x691901d9f5d010db26a31ec12ec80a97248273a95c9976023342cffa2edce4b9)) + **Cube #1** ([`0x457abca7…60ec`](https://basescan.org/tx/0x457abca78ea635d4f4ab3a21f7bbadbf6417109a08d3b25bcaa3331e534e60ec)). Same estimation-lag revert as Sepolia — retry loop handled it.
+- **App switched to Base Mainnet** (contracts, chainId, explorer links) and redeployed to amberforge-board.vercel.app.
+- **AmberMind registered on mainnet registry** `0x8004A169…a432`: [`0xc24f69b0…dfdb`](https://basescan.org/tx/0xc24f69b01fcf97b5583a7121b123018213def297d32a3d80f576f3bbad49dfdb) → **agentId 59020** (dry-run predicted 59019 — someone registered in between; **read the actual ID from the Transfer event, not the dry-run**). Agent card lists both registrations (mainnet 59020 + Sepolia 8095); `tokenURI` points at the hosted card.
+- Bridge to Solana intentionally ON HOLD — user will supply the destination address.
 ## 2026-07-14 — Phase 4: Amberboard built, contracts live, first CUBE minted
 
 - **Research**: Farcaster-miniapp path is deprecated in Base docs — current flow is a standard web app + Base.dev registration (metadata + Builder Code = discoverability; no manifest).

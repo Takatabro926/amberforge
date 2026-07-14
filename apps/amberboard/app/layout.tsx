@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 export const metadata: Metadata = {
   title: "Amberboard",
   description:
-    "Onchain cheer leaderboard of the Amberforge project on Base Sepolia. Cheer, climb the board, earn an Amber Cube.",
+    "Onchain cheer leaderboard of the Amberforge project on Base. Cheer, climb the board, earn an Amber Cube.",
   other: {
     // Base.dev domain-ownership verification tag
     "base:app_id": "6a568090862b3c002cbb65af",

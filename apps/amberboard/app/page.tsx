@@ -10,7 +10,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { baseSepolia } from "wagmi/chains";
+import { base } from "wagmi/chains";
 
 import {
   AMBR_ADDRESS,
@@ -31,7 +31,7 @@ export default function Home() {
   const { connectors, connect } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChain } = useSwitchChain();
-  const wrongChain = isConnected && chainId !== baseSepolia.id;
+  const wrongChain = isConnected && chainId !== base.id;
 
   const { data: board, refetch: refetchBoard } = useReadContract({
     address: BOARD_ADDRESS,
@@ -88,9 +88,9 @@ export default function Home() {
     <main>
       <h1>⬢ AMBERBOARD</h1>
       <p className="sub">
-        Onchain cheer leaderboard · Base Sepolia ·{" "}
+        Onchain cheer leaderboard · Base ·{" "}
         <a
-          href={`https://sepolia.basescan.org/address/${BOARD_ADDRESS}`}
+          href={`https://basescan.org/address/${BOARD_ADDRESS}`}
           target="_blank"
           rel="noreferrer"
         >
@@ -138,8 +138,8 @@ export default function Home() {
             {wrongChain && (
               <div className="row" style={{ marginTop: 12 }}>
                 <span className="you">wrong network</span>
-                <button onClick={() => switchChain({ chainId: baseSepolia.id })}>
-                  SWITCH TO BASE SEPOLIA
+                <button onClick={() => switchChain({ chainId: base.id })}>
+                  SWITCH TO BASE
                 </button>
               </div>
             )}
@@ -154,7 +154,7 @@ export default function Home() {
                     address: BOARD_ADDRESS,
                     abi: boardAbi,
                     functionName: "cheer",
-                    chainId: baseSepolia.id,
+                    chainId: base.id,
                     dataSuffix: DATA_SUFFIX,
                   })
                 }
@@ -180,7 +180,7 @@ export default function Home() {
                     address: CUBES_ADDRESS,
                     abi: cubesAbi,
                     functionName: "mintCube",
-                    chainId: baseSepolia.id,
+                    chainId: base.id,
                     dataSuffix: DATA_SUFFIX,
                   })
                 }
@@ -192,7 +192,7 @@ export default function Home() {
               <p className="hint">
                 last tx:{" "}
                 <a
-                  href={`https://sepolia.basescan.org/tx/${mintTx ?? cheerTx}`}
+                  href={`https://basescan.org/tx/${mintTx ?? cheerTx}`}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -237,13 +237,13 @@ export default function Home() {
       <p className="hint">
         Part of the Amberforge learning project · AMBR token ·{" "}
         <a
-          href={`https://sepolia.basescan.org/address/${CUBES_ADDRESS}`}
+          href={`https://basescan.org/address/${CUBES_ADDRESS}`}
           target="_blank"
           rel="noreferrer"
         >
           Amber Cubes
         </a>{" "}
-        · agent: AmberMind (ERC-8004 #8095)
+        · agent: AmberMind (ERC-8004 #59020)
       </p>
     </main>
   );
