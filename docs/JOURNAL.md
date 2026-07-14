@@ -46,6 +46,13 @@ New standing rule from user: no per-tx confirmation below $3; cost card + TAK ab
 - **Amber Ember (EMBR) launched via Flaunch** (launchpad route now executed, not just documented): memecoin [`0xD934dB69…2Fb3`](https://basescan.org/address/0xD934dB69495724D5A642B256B76fF7Bc24902Fb3), tx [`0x01105472…4e92`](https://basescan.org/tx/0x01105472b3f12054afc706bbf715371231e088140668fbc916563941dcac4e92), Flaunch revenue NFT **#113484** to deployer (80/20 split). $1k mcap ⇒ no protocol fee. Script: `scripts/flaunch-embr.mjs`.
 - **Lesson**: docs lag protocol — Flaunch's documented 30-min FairLaunch is deprecated on-chain; the SDK error message was the source of truth.
 - Blockscout mainnet `tokens/` record for AMBR appeared after **~32 min** (watcher measurement).
+
+## 2026-07-14 — Agent Builder Codes (mainnet) + passkey flows abandoned by user decision
+
+- **User decision**: all passkey-based flows permanently off (biometrics concern; clarified once that passkeys can use PIN/hardware key — decision stands). Base MCP sign-in + tool demo tasks removed; Base Account bundle (SIWB/Base Pay/Sub Accounts/Spend Permissions/subscriptions) not pursued.
+- **AmberMind registered as agent** via `api.base.dev/v1/agents/builder-codes` → dedicated code `bc_vsdrc64m` (separate from app's `bc_mlikghsq`). Attribution wired into agent tx path (`agent-tx.mjs`, viem `dataSuffix`); rules in `AGENT_README.md`.
+- **Proof tx (mainnet)**: agent `cheer()` [`0x8eb990df…5580`](https://basescan.org/tx/0x8eb990dfeac77707185115e19dff5a5474e2fc743ed4847b530864f955c15580) — calldata carries the agent suffix (verified programmatically).
+- Bridge: mainnet root oracle bursty (>2 h behind at times); prove poller re-armed at 10-min interval.
 ## 2026-07-14 — Phase 4: Amberboard built, contracts live, first CUBE minted
 
 - **Research**: Farcaster-miniapp path is deprecated in Base docs — current flow is a standard web app + Base.dev registration (metadata + Builder Code = discoverability; no manifest).

@@ -3,6 +3,21 @@
 Three pillars: an MCP-connected wallet for the AI assistant, machine-to-machine payments
 (x402), and onchain agent identity (ERC-8004).
 
+> **Update 2026-07-14**: user permanently declined passkey-based flows — Base MCP sign-in
+> and the tool demo are **abandoned by decision**, not pending. (Base MCP requires a
+> passkey Base Account; everything else below works with the EOA keystore.)
+
+## 4. Agent Builder Codes ✅ (mainnet)
+
+AmberMind's wallet is registered as an **agent** with Base
+(`POST api.base.dev/v1/agents/builder-codes`) and has its own builder code
+**`bc_vsdrc64m`** — separate from the Amberboard app's `bc_mlikghsq`, so agent
+activity and app activity are attributed independently. Attribution is attached via
+viem's `dataSuffix` on every agent transaction (`agents/ambermind/agent-tx.mjs`,
+rules in `agents/ambermind/AGENT_README.md`). Proof on mainnet:
+[`0x8eb990df…5580`](https://basescan.org/tx/0x8eb990dfeac77707185115e19dff5a5474e2fc743ed4847b530864f955c15580) —
+`cheer()` calldata ends with the agent's ERC-8021 suffix.
+
 ## 1. Base MCP (installed; sign-in pending)
 
 Base MCP (`https://mcp.base.org`) connects an AI assistant to a **Base Account** — a smart
