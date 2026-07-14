@@ -45,13 +45,15 @@ Solana Devnet `CcBvQTP5PSeqG9gtajJDbAT198edpL1cL4G9yNCJMCyd` (local keypair, fun
 Command: `bun cli sol bridge bridge-sol --deploy-env testnet-prod --to 0x23dd… --amount 0.01 --payer-kp config --pay-for-relay`.
 End-to-end latency: ~2 minutes.
 
-### Leg 2 — Base → Solana: 0.005 SOL (burn done, prove/finalize pending root)
+### Leg 2 — Base → Solana: 0.005 SOL ✅
 
 | Step | Proof |
 |------|-------|
 | Burn 0.005 wSOL via `Bridge.bridgeToken` (no attached call) | [`0xb424a044…a95e`](https://sepolia.basescan.org/tx/0xb424a044f62e64d4d7f91b788ce1b8e5f1da8d7477b9989934f205fb2347a95e) (block 44,140,602) |
-| Wait for Merkle root on Solana | ⏳ devnet oracle root was at Base block 43,406,400 (~17 days behind) at burn time |
-| `prove-message` + `relay-message` | pending — poller armed, will complete when root catches up |
+| Merkle root caught up on Solana | ~35 min after burn (root had been stale since block 43,406,400 — devnet posts are infrequent between bursts) |
+| `prove-message` (Merkle proof submitted, nonce 244) | [`4iQUjcBk…ujmu`](https://explorer.solana.com/tx/4iQUjcBkLgvvtAk4ynV9AFzexXLULEq4ty7VGbx42qpPSPEXgAuBJLUTEguqq3PyzZ2RD5mrMwq6VxHeAWLtujmu?cluster=devnet) |
+| `relay-message` (vault released 5,000,000 lamports) | [`rhMNSDFZ…KsCa`](https://explorer.solana.com/tx/rhMNSDFZsSqwoCYMF8gP26iWp1atThkMiAmSFt4MwAGAdgrLjNTAnPbUCCH1WAgKZvwfieAQxBsbyGi8QUgKsCa?cluster=devnet) |
+| Result | 0.005 SOL back in `CcBvQTP5…MCyd`; **round trip complete in both directions** |
 
 Call used (manual, keystore-signed): `bridgeToken((wSOL, bytes32(0), <solana pubkey as bytes32>, 5_000_000), [])` —
 for CrossChainERC20 tokens `localAmount == remoteAmount` (both 9 decimals, no scaling; the

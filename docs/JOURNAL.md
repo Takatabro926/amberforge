@@ -4,6 +4,16 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-14 — Phase 2 COMPLETE (both directions) + Phase 3 started: AmberMind registered
+
+- **Bridge leg 2 finalized**: devnet root caught up ~35 min after burn; `prove-message` ([`4iQUjcBk…`](https://explorer.solana.com/tx/4iQUjcBkLgvvtAk4ynV9AFzexXLULEq4ty7VGbx42qpPSPEXgAuBJLUTEguqq3PyzZ2RD5mrMwq6VxHeAWLtujmu?cluster=devnet)) then `relay-message` ([`rhMNSDFZ…`](https://explorer.solana.com/tx/rhMNSDFZsSqwoCYMF8gP26iWp1atThkMiAmSFt4MwAGAdgrLjNTAnPbUCCH1WAgKZvwfieAQxBsbyGi8QUgKsCa?cluster=devnet)) released 0.005 SOL from the vault. `docs/reports/phase-2.md` written.
+- **Phase 3**: Base MCP installed into Claude Code (`claude mcp add --transport http --scope user base-mcp https://mcp.base.org`) — **auth deferred by user** (resume: `/mcp` → Authenticate with passkey).
+- **AmberMind registered in ERC-8004 Identity Registry** (Base Sepolia `0x8004A818…BD9e`, same registry TrailKeeper used — agentId **8095** vs TrailKeeper's 8073):
+  - `register(string)` tx: [`0xd9c6de91…0813`](https://sepolia.basescan.org/tx/0xd9c6de91d83a2f5cdbb3e941468aecbdfc62a36b7d91261bd55d221507320813)
+  - `setAgentURI` (card with registration binding) tx: [`0xd4ab469f…108f`](https://sepolia.basescan.org/tx/0xd4ab469f473f48bdbda348a4c597d01db6cd4b50bbfadcf773231629d046108f)
+  - Agent card embedded as `data:application/json;base64` URI — fully on-chain, zero hosting deps; upgrade to Amberboard URL planned in Phase 4.
+- x402 pending: user funding deployer with Sepolia USDC via faucet.circle.com; balance watcher armed.
+
 ## 2026-07-14 — Phase 2: Base↔Solana bridge — leg 1 complete, leg 2 half-done
 
 - Cloned official [base/bridge](https://github.com/base/bridge) repo (user-approved), bun 1.3.14 installed, TS client built. Env `testnet-prod` = Base Sepolia ↔ Solana Devnet.
