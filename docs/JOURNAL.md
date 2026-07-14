@@ -4,6 +4,22 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-14 — MAINNET: AMBR deployed to Base Mainnet + Blockscout API assessment
+
+User-approved (explicit "TAK", cost card shown first: ~583k gas ≈ <$0.02).
+
+- **AMBR on Base Mainnet (8453)**: [`0x4Bc12215fd6CB26BbFe1f2960AC025250fa0C6B5`](https://basescan.org/address/0x4Bc12215fd6CB26BbFe1f2960AC025250fa0C6B5)
+  — deploy tx [`0x17e5cf73…ed30a`](https://basescan.org/tx/0x17e5cf7346f70ed19d997f149630363df78a27f98324321987d5dffc4b2ed30a), same bytecode as Sepolia (1M AMBR to deployer).
+  - **BaseScan**: `Pass - Verified` (Etherscan V2).
+  - **Blockscout mainnet** ([page](https://base.blockscout.com/address/0x4Bc12215fd6CB26BbFe1f2960AC025250fa0C6B5)): verification via v2 standard-input API with user's `proapi_` key — **worked, verified in ~20 s** (unlike the Sepolia instance, which still hasn't processed any of our submissions).
+- **Blockscout API test results** (mainnet instance):
+  - ✅ `smart-contracts` v2 (is_verified, compiler, evm=osaka) — works
+  - ✅ legacy `getsourcecode` — works (full source returned)
+  - ✅ `transactions/{hash}` — works, includes the constructor-mint token transfer
+  - ⏳ `tokens/{addr}` — `Not found` minutes after deploy; token records populate via an async queue
+  - ⏳ `addresses/{addr}/counters` — zeros; aggregates are async too (instance reports `indexed_internal_transactions_ratio: 0.58`)
+  - Watcher armed for the token record to measure the lag.
+- **Lesson**: on Blockscout, "indexed" is layered — raw blocks/txs are immediate, while token registries and counters are derived asynchronously; don't treat `tokens/` 404 as "token doesn't exist".
 ## 2026-07-14 — Phase 4: Amberboard built, contracts live, first CUBE minted
 
 - **Research**: Farcaster-miniapp path is deprecated in Base docs — current flow is a standard web app + Base.dev registration (metadata + Builder Code = discoverability; no manifest).
