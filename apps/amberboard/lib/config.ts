@@ -13,7 +13,5 @@ export const config = createConfig({
   transports: {
     [baseSepolia.id]: http(),
   },
-  ...(builderCode
-    ? { dataSuffix: Attribution.toDataSuffix({ codes: [builderCode as `0x${string}`] }) }
-    : {}),
+  ...(builderCode ? { dataSuffix: Attribution.toDataSuffix({ codes: [builderCode] }) } : {}),
 });
