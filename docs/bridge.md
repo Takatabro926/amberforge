@@ -62,8 +62,8 @@ for CrossChainERC20 tokens `localAmount == remoteAmount` (both 9 decimals, no sc
 ## Mainnet round trip (2026-07-14) ✅
 
 Env `mainnet`: Base Mainnet ↔ Solana Mainnet. Asset bridged: **ETH** (18 dec) ↔ wETH SPL
-(Token-2022, 9 dec, mint `2ZCFyWM6…9LMX`). User wallets: Solana `73cRUf…MCyd`→ wait, see below —
-Solana `73cRUfZGovk2gPmQ2pzgS52jAwDVYFQQwT9PrquxvmUi` (ATA `3KMVk4…Zd4m`), Base return address
+(Token-2022, 9 dec, mint `2ZCFyWM6…9LMX`). User wallets: Solana
+`73cRUfZGovk2gPmQ2pzgS52jAwDVYFQQwT9PrquxvmUi` (ATA `3KMVk4…Zd4m`), Base return address
 `0x1b665eee71FEE4D68296182cCb0DA03Ba1C4D57e`.
 
 | Step | Proof |
