@@ -6,9 +6,11 @@ import {
   useConnect,
   useDisconnect,
   useReadContract,
+  useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { baseSepolia } from "wagmi/chains";
 
 import {
   AMBR_ADDRESS,
@@ -24,9 +26,11 @@ function short(addr: string) {
 }
 
 export default function Home() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chainId } = useAccount();
   const { connectors, connect } = useConnect();
   const { disconnect } = useDisconnect();
+  const { switchChain } = useSwitchChain();
+  const wrongChain = isConnected && chainId !== baseSepolia.id;
 
   const { data: board, refetch: refetchBoard } = useReadContract({
     address: BOARD_ADDRESS,
@@ -130,14 +134,27 @@ export default function Home() {
                 disconnect
               </button>
             </div>
+            {wrongChain && (
+              <div className="row" style={{ marginTop: 12 }}>
+                <span className="you">wrong network</span>
+                <button onClick={() => switchChain({ chainId: baseSepolia.id })}>
+                  SWITCH TO BASE SEPOLIA
+                </button>
+              </div>
+            )}
             <div className="row" style={{ marginTop: 12 }}>
               <span>
                 your cheers: <b className="you">{myCheers?.toString() ?? "0"}</b>
               </span>
               <button
-                disabled={cheering}
+                disabled={cheering || wrongChain}
                 onClick={() =>
-                  cheer({ address: BOARD_ADDRESS, abi: boardAbi, functionName: "cheer" })
+                  cheer({
+                    address: BOARD_ADDRESS,
+                    abi: boardAbi,
+                    functionName: "cheer",
+                    chainId: baseSepolia.id,
+                  })
                 }
               >
                 {cheering ? "cheering…" : "CHEER 📣"}
@@ -155,9 +172,14 @@ export default function Home() {
                 )}
               </span>
               <button
-                disabled={minting || hasCube === true || (myCheers ?? 0n) < 3n}
+                disabled={minting || wrongChain || hasCube === true || (myCheers ?? 0n) < 3n}
                 onClick={() =>
-                  mint({ address: CUBES_ADDRESS, abi: cubesAbi, functionName: "mintCube" })
+                  mint({
+                    address: CUBES_ADDRESS,
+                    abi: cubesAbi,
+                    functionName: "mintCube",
+                    chainId: baseSepolia.id,
+                  })
                 }
               >
                 {minting ? "minting…" : "MINT CUBE ⬢"}
