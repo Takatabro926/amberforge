@@ -59,6 +59,26 @@ Call used (manual, keystore-signed): `bridgeToken((wSOL, bytes32(0), <solana pub
 for CrossChainERC20 tokens `localAmount == remoteAmount` (both 9 decimals, no scaling; the
 `/1e9` in the repo's example script is ETH's 18→9 decimals scaling, not applicable to wSOL).
 
+## Mainnet round trip (2026-07-14) ✅
+
+Env `mainnet`: Base Mainnet ↔ Solana Mainnet. Asset bridged: **ETH** (18 dec) ↔ wETH SPL
+(Token-2022, 9 dec, mint `2ZCFyWM6…9LMX`). User wallets: Solana `73cRUf…MCyd`→ wait, see below —
+Solana `73cRUfZGovk2gPmQ2pzgS52jAwDVYFQQwT9PrquxvmUi` (ATA `3KMVk4…Zd4m`), Base return address
+`0x1b665eee71FEE4D68296182cCb0DA03Ba1C4D57e`.
+
+| Step | Proof |
+|------|-------|
+| Create ATA (Token-2022) | [`38zDuMGe…Q9Se`](https://explorer.solana.com/tx/38zDuMGehuqrHzTE7oP59v5LmidVLiZCTUXwNwGK5ZwZpagtBdG1Sg9mfWV2Lp8xWYEHebnFZaB24o6ErDksQ9Se) |
+| Lock 0.0005 ETH on Base (`bridgeToken`, ETH sentinel, `remoteAmount 500000` ⇒ scalar 1e9 checked by dry-run) | [`0x1233619e…0179`](https://basescan.org/tx/0x1233619e9a794e4b51deddde7e53bbd78b9528ef5e089b18ca06b55fe6f60179) |
+| Root wait | **~70 min** (mainnet oracle also bursty — the "15 min" SLA is best-case) |
+| `prove-message` (Merkle proof, user-paid) | [`3dKYAsN2…Po7v`](https://explorer.solana.com/tx/3dKYAsN26jKc1nAVoqTA248sfaRQir5F3gkAUjWQivLFVm7ydt8otHGeM7veYmaiu2CNAHeRf217KV2XvA1nPo7v) |
+| `relay-message` → 0.0005 wETH minted to ATA | [`2j4p9TMy…sodn`](https://explorer.solana.com/tx/2j4p9TMyqtHW5cMzCtdvYKVnYSfD4yHe3Zd6vHnHMFW3bDbrCq4pdyUqsaLkj9ga8Qzbx6DXN2gi8UgBgDcsodn) |
+| Return: burn 0.00025 wETH + pay-for-relay (user-signed) | [`2nMBLHig…Fgpw`](https://explorer.solana.com/tx/2nMBLHig4NiZed2KEfeUAA7NbDDQXJ5CY3TfXkkqnC1FR6KXHhvJ6C9dRZL7R5r9SujmEe7yr8pmTyW1TE2TFgpw) |
+| Auto-relay on Base → **native 0.00025 ETH delivered** to `0x1b66…D57e` (gasless for recipient) | balance confirmed on-chain |
+
+End state: 0.00025 wETH remains on Solana, 0.00025 ETH delivered on Base, ~0.0108 SOL left
+after all fees. Round trip: Base→Solana ~75 min (root-bound), Solana→Base ~2 min.
+
 ## Lessons
 
 - **Mainnet ≠ testnet SLAs**: docs promise ~15 min root posting; the devnet oracle lags by days.
