@@ -20,6 +20,7 @@ import {
   boardAbi,
   cubesAbi,
 } from "@/lib/contracts";
+import { DATA_SUFFIX } from "@/lib/attribution";
 
 function short(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
@@ -154,6 +155,7 @@ export default function Home() {
                     abi: boardAbi,
                     functionName: "cheer",
                     chainId: baseSepolia.id,
+                    dataSuffix: DATA_SUFFIX,
                   })
                 }
               >
@@ -179,6 +181,7 @@ export default function Home() {
                     abi: cubesAbi,
                     functionName: "mintCube",
                     chainId: baseSepolia.id,
+                    dataSuffix: DATA_SUFFIX,
                   })
                 }
               >
