@@ -53,6 +53,14 @@ New standing rule from user: no per-tx confirmation below $3; cost card + TAK ab
 - **AmberMind registered as agent** via `api.base.dev/v1/agents/builder-codes` → dedicated code `bc_vsdrc64m` (separate from app's `bc_mlikghsq`). Attribution wired into agent tx path (`agent-tx.mjs`, viem `dataSuffix`); rules in `AGENT_README.md`.
 - **Proof tx (mainnet)**: agent `cheer()` [`0x8eb990df…5580`](https://basescan.org/tx/0x8eb990dfeac77707185115e19dff5a5474e2fc743ed4847b530864f955c15580) — calldata carries the agent suffix (verified programmatically).
 - Bridge: mainnet root oracle bursty (>2 h behind at times); prove poller re-armed at 10-min interval.
+
+## 2026-07-14 — MAINNET bridge round trip DONE + AA without passkeys (gasless & USDC-gas)
+
+- **Mainnet bridge complete both ways** (details in docs/bridge.md): 0.0005 ETH Base→Solana (root wait ~70 min, prove [`3dKYAsN2…`](https://explorer.solana.com/tx/3dKYAsN26jKc1nAVoqTA248sfaRQir5F3gkAUjWQivLFVm7ydt8otHGeM7veYmaiu2CNAHeRf217KV2XvA1nPo7v), relay [`2j4p9TMy…`](https://explorer.solana.com/tx/2j4p9TMyqtHW5cMzCtdvYKVnYSfD4yHe3Zd6vHnHMFW3bDbrCq4pdyUqsaLkj9ga8Qzbx6DXN2gi8UgBgDcsodn)) → 0.0005 wETH on user's ATA; return 0.00025 wETH burn ([`2nMBLHig…`](https://explorer.solana.com/tx/2nMBLHig4NiZed2KEfeUAA7NbDDQXJ5CY3TfXkkqnC1FR6KXHhvJ6C9dRZL7R5r9SujmEe7yr8pmTyW1TE2TFgpw)) → native 0.00025 ETH delivered to user's `0x1b66…D57e` (gasless for recipient).
+- **Gasless (EIP-7702 + Pimlico sponsorship)**: tester EOA delegated to Simple7702Account, sponsored `cheer()` [`0x781d198a…861d`](https://sepolia.basescan.org/tx/0x781d198ae33913c7e8ecbe9857f2718bdc408ecaf1f8a5f8964b6ffdd552861d) — ETH unchanged to the wei.
+- **Gas in USDC (ERC-4337 v0.7 + ERC-20 paymaster)**: counterfactual SimpleAccount with 0 ETH ever, first op deployed it + cheered, gas billed 0.005606 USDC ([`0x3dee3f38…a288`](https://sepolia.basescan.org/tx/0x3dee3f382b60326f17bd78465e7b0ffdb282dd2892165253b74e1f96a731a288)).
+- **Finding**: Pimlico ERC-20 paymaster mode consistently reverts `postOp` on EntryPoint v0.8/7702 (sponsored mode fine) — documented in docs/account-abstraction.md; v0.7 is the working path.
+- Pimlico API key (user-provided, email signup, no phone/KYC) in git-ignored `.env`.
 ## 2026-07-14 — Phase 4: Amberboard built, contracts live, first CUBE minted
 
 - **Research**: Farcaster-miniapp path is deprecated in Base docs — current flow is a standard web app + Base.dev registration (metadata + Builder Code = discoverability; no manifest).
