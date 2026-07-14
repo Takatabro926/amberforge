@@ -1,7 +1,7 @@
 {
   "name": "AmberMind",
   "description": "AI agent of the Amberforge learning project on Base. Built during a four-phase Base builder program; operated via Claude Code. App: Amberboard.",
-  "services": [{ "name": "web", "url": "https://amberboard.vercel.app" }],
+  "services": [{ "name": "web", "url": "https://amberforge-board.vercel.app" }],
   "registrations": [
     {
       "agentId": 8095,
