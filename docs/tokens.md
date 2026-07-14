@@ -13,7 +13,14 @@ Write the contract yourself (OpenZeppelin base), test with Foundry, deploy bytec
 - **Liquidity**: none out of the box; you create and fund a DEX pool yourself.
 - **Best for**: learning, protocol tokens, anything needing custom logic.
 
-## Route 2 — Launchpads (discovery only, no deploy)
+## Route 2 — Launchpads (executed on mainnet: EMBR via Flaunch)
+
+**Done 2026-07-14**: **Amber Ember (EMBR)** launched on Flaunch, Base Mainnet:
+- Memecoin: [`0xD934dB69495724D5A642B256B76fF7Bc24902Fb3`](https://basescan.org/address/0xD934dB69495724D5A642B256B76fF7Bc24902Fb3) · [Flaunch page](https://flaunch.gg/base/coin/0xD934dB69495724D5A642B256B76fF7Bc24902Fb3)
+- Launch tx: [`0x01105472…4e92`](https://basescan.org/tx/0x01105472b3f12054afc706bbf715371231e088140668fbc916563941dcac4e92) — via `@flaunch/sdk` `flaunchIPFS` (SDK pinned image+metadata to IPFS)
+- Supply 100B (Flaunch standard), $1k initial market cap (**below $10k ⇒ zero protocol fee**, gas only)
+- Creator revenue: 80/20 creator/community — tokenized as **Flaunch NFT #113484** (transferable revenue stream) held by the deployer
+- Protocol note: the 30-min FairLaunch window is **deprecated** in the current protocol — SDK enforces `fairLaunchPercent: 0`
 
 Managed platforms that deploy a standard token for you and bundle liquidity + distribution.
 What you pay for convenience is fees and reduced control.

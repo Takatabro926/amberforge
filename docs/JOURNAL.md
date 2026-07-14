@@ -39,6 +39,13 @@ New standing rule from user: no per-tx confirmation below $3; cost card + TAK ab
 - **App switched to Base Mainnet** (contracts, chainId, explorer links) and redeployed to amberforge-board.vercel.app.
 - **AmberMind registered on mainnet registry** `0x8004A169…a432`: [`0xc24f69b0…dfdb`](https://basescan.org/tx/0xc24f69b01fcf97b5583a7121b123018213def297d32a3d80f576f3bbad49dfdb) → **agentId 59020** (dry-run predicted 59019 — someone registered in between; **read the actual ID from the Transfer event, not the dry-run**). Agent card lists both registrations (mainnet 59020 + Sepolia 8095); `tokenURI` points at the hosted card.
 - Bridge to Solana intentionally ON HOLD — user will supply the destination address.
+
+## 2026-07-14 — MAINNET: B20 payment with memo + EMBR launched on Flaunch
+
+- **B20 payment**: `transferWithMemo(0x1b66…D57e, 100 BALT, "AMBERFORGE-INV-001")` — [`0x80772687…82b5`](https://basescan.org/tx/0x80772687e797210734847ba8905e9401d9206f5650b4b523077ba82a1d2882b5); emits `Transfer` + `Memo` (payment-with-reference natively in the standard). Balance at recipient confirmed.
+- **Amber Ember (EMBR) launched via Flaunch** (launchpad route now executed, not just documented): memecoin [`0xD934dB69…2Fb3`](https://basescan.org/address/0xD934dB69495724D5A642B256B76fF7Bc24902Fb3), tx [`0x01105472…4e92`](https://basescan.org/tx/0x01105472b3f12054afc706bbf715371231e088140668fbc916563941dcac4e92), Flaunch revenue NFT **#113484** to deployer (80/20 split). $1k mcap ⇒ no protocol fee. Script: `scripts/flaunch-embr.mjs`.
+- **Lesson**: docs lag protocol — Flaunch's documented 30-min FairLaunch is deprecated on-chain; the SDK error message was the source of truth.
+- Blockscout mainnet `tokens/` record for AMBR appeared after **~32 min** (watcher measurement).
 ## 2026-07-14 — Phase 4: Amberboard built, contracts live, first CUBE minted
 
 - **Research**: Farcaster-miniapp path is deprecated in Base docs — current flow is a standard web app + Base.dev registration (metadata + Builder Code = discoverability; no manifest).
