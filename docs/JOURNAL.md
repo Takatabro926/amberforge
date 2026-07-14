@@ -4,6 +4,18 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-14 — Phase 1 COMPLETE: BALT (B20) launched, tokens.md, phase report
+
+- **B20 activation confirmed on-chain** (Sepolia): `isActivated(keccak256("base.b20_asset"))` → `true` (Beryl hardfork: Sepolia 2026-06-18, mainnet 2026-06-25).
+- **BALT (Baltic) created** via B20 Factory precompile `0xB20f…0000`, Asset variant, salt `keccak256("amberforge-baltic")`:
+  - Token (deterministic `0xb20…` address): [`0xb2000000000000000000001B288D711aC70Fa6c5`](https://sepolia.basescan.org/address/0xb2000000000000000000001B288D711aC70Fa6c5)
+  - Create tx (initCalls: grant MINT_ROLE + cap 1,000,000): [`0x8bf6b798…9707`](https://sepolia.basescan.org/tx/0x8bf6b79811c0df344aceee25b951c284af87821e22d82766dccef2437aef9707)
+  - Mint 250,000 BALT: [`0x494ea21f…333e`](https://sepolia.basescan.org/tx/0x494ea21feb0dd039f7ad010cd06681b940465a0c035da7d4d31043fc1487333e)
+  - Verified state: name/symbol/decimals/cap/supply correct; `isB20` + `isB20Initialized` true.
+- Params/initCalls encoded manually (`cast abi-encode` + `cast calldata`) after reading `base-std` sources (`B20FactoryLib`, `IB20Factory`); dry-run via `eth_call` before broadcast.
+- `docs/tokens.md` written (raw vs launchpads vs B20); `docs/reports/phase-1.md` written — **all Phase 1 acceptance criteria met**.
+- **Lesson**: `forge script` can't simulate Base-native precompiles locally (they don't exist in vanilla EVM simulation) — either use `base-forge`/`base-anvil` or skip scripts and go `cast send` with pre-encoded calldata.
+
 ## 2026-07-14 — Phase 1 kickoff: environment & repo setup
 
 - **Environment check**: Foundry 1.7.1 (forge/cast), Node v24.18.0, git 2.43.0 — all present, nothing to install.
