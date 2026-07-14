@@ -12,7 +12,8 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
   - `register(string)` tx: [`0xd9c6de91…0813`](https://sepolia.basescan.org/tx/0xd9c6de91d83a2f5cdbb3e941468aecbdfc62a36b7d91261bd55d221507320813)
   - `setAgentURI` (card with registration binding) tx: [`0xd4ab469f…108f`](https://sepolia.basescan.org/tx/0xd4ab469f473f48bdbda348a4c597d01db6cd4b50bbfadcf773231629d046108f)
   - Agent card embedded as `data:application/json;base64` URI — fully on-chain, zero hosting deps; upgrade to Amberboard URL planned in Phase 4.
-- x402 pending: user funding deployer with Sepolia USDC via faucet.circle.com; balance watcher armed.
+- **x402 payment executed**: deployer paid $0.001 testnet USDC for TrailKeeper's paid `GET /report` (trailkeeper-three.vercel.app) via `@x402/fetch` — 402 → EIP-3009 signature → facilitator settled ([`0xbbdd4ded…612f`](https://sepolia.basescan.org/tx/0xbbdd4deda186b79d438b1b1a4d1ea22dc53248d0a6526a0f4e620ed6f9bd612f)), gasless for payer (facilitator `0xd407…` paid gas). Deployer USDC 20 → 19.999 (funded by user via faucet.circle.com). Client lives in `agents/ambermind/pay-report.mjs`.
+- `docs/agents.md` written. Phase 3 nearly complete — only MCP sign-in + tool demo pending (user-deferred).
 
 ## 2026-07-14 — Phase 2: Base↔Solana bridge — leg 1 complete, leg 2 half-done
 
