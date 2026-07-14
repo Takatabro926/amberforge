@@ -25,4 +25,21 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 - **On-chain sanity check** via `cast call`: name/symbol/totalSupply/balanceOf all correct.
 - **Lesson**: Etherscan API V1 per-chain endpoints (api-sepolia.basescan.org) are deprecated — foundry's default Etherscan V2 verifier with `chain = 84532` works with a plain `ETHERSCAN_API_KEY`.
 
+## 2026-07-14 — Phase 1: AMBR full lifecycle on Base Sepolia
+
+Tester wallet `0xF4e7A512a5Cfdeb827347011bF3535CC9720f1A6` (throwaway, key in git-ignored `.env`).
+
+| # | Action | Tx |
+|---|--------|----|
+| 1 | Fund tester with 0.003 ETH (gas) | [`0xcbd3155b…c922`](https://sepolia.basescan.org/tx/0xcbd3155b62cf7197c50b88e3d6399a7370623081b5e17273ce62be922373c922) |
+| 2 | `transfer` deployer → tester, 1,000 AMBR | [`0x598dd82d…4078`](https://sepolia.basescan.org/tx/0x598dd82d5b5cbe30bea0b1a35ad98a89b73ab17e4f155c3bdf4c616267d84078) |
+| 3 | `approve` tester for 500 AMBR | [`0x1230f4fc…c20e`](https://sepolia.basescan.org/tx/0x1230f4fca2814091ab599d750c1f47daccb2c717684e5a8c6635c123923ac20e) |
+| 4 | `transferFrom` (signed by tester) deployer → tester, 200 AMBR | [`0x1bf06ab7…e4be`](https://sepolia.basescan.org/tx/0x1bf06ab7f977d6f354426f780d5f9014dca9cf175b50b4b2fd97723ddca8e4be) |
+| 5 | `burn` 1,000 AMBR by deployer | [`0xb6642736…d7f3`](https://sepolia.basescan.org/tx/0xb66427363aedc6d01db4f5034d836cd5eac698679443889945ab067401a2d7f3) |
+
+Final state (all consistent): totalSupply 999,000 AMBR; deployer 997,800; tester 1,200; remaining allowance 300.
+
+- **Lesson (nonce)**: the public `sepolia.base.org` RPC is load-balanced — `getTransactionCount` can lag one tx behind, causing `nonce too low` on rapid sequential sends. Fix: fetch the nonce once (`cast nonce`) and pass `--nonce` explicitly, incrementing locally.
+- **Loose end**: Blockscout (base-sepolia.blockscout.com) hasn't picked up verification yet; source is verified on BaseScan and Sourcify, Blockscout usually auto-imports from Sourcify later.
+
 - **Deployer key imported** into Foundry encrypted keystore `amberforge-deployer` (address verified: `0x23dd…D08C`). Keystore password is machine-generated, stored in `~/.foundry/keystores/amberforge-deployer.password` (chmod 600, outside the repo), enabling non-interactive signing via `--password-file`. Trade-off accepted for the testnet phase: anyone with local disk access could sign; before mainnet operations we will re-import with a user-memorized password.
