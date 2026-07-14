@@ -16,6 +16,13 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 - `docs/ecosystem.md` written (Builder Rewards / Builder Grants / Base Batches / OP Retro / CDP).
 - Remaining (user-side): Builder Code from base.dev, `vercel login` + deploy, Base.dev registration.
 
+## 2026-07-14 — Phase 4: Amberboard LIVE on Vercel + agent identity loop closed
+
+- **Deployed**: [amberforge-board.vercel.app](https://amberforge-board.vercel.app) (project `amberforge-board`, production, aliased). Verified live: page, `base:app_id` verification meta tag, `/.well-known/agent-card.json`.
+- Base.dev created the app entry (app_id `6a568090862b3c002cbb65af`); domain verification tag embedded pre-deploy — verify after deploy (chicken-and-egg resolved by deploying first).
+- **AmberMind agentURI repointed** from data:base64 URI to the hosted card: [`0xf2e2b878…e203`](https://sepolia.basescan.org/tx/0xf2e2b878c9dd2c9ae3e9c1b01d48ccbbed3f5c896e9f74b3d398bfd2397fe203) — `tokenURI(8095)` now returns `https://amberforge-board.vercel.app/.well-known/agent-card.json`.
+- Remaining: user clicks Verify on base.dev, supplies Builder Code (→ env + redeploy), completes app metadata registration.
+
 ## 2026-07-14 — Phase 2 COMPLETE (both directions) + Phase 3 started: AmberMind registered
 
 - **Bridge leg 2 finalized**: devnet root caught up ~35 min after burn; `prove-message` ([`4iQUjcBk…`](https://explorer.solana.com/tx/4iQUjcBkLgvvtAk4ynV9AFzexXLULEq4ty7VGbx42qpPSPEXgAuBJLUTEguqq3PyzZ2RD5mrMwq6VxHeAWLtujmu?cluster=devnet)) then `relay-message` ([`rhMNSDFZ…`](https://explorer.solana.com/tx/rhMNSDFZsSqwoCYMF8gP26iWp1atThkMiAmSFt4MwAGAdgrLjNTAnPbUCCH1WAgKZvwfieAQxBsbyGi8QUgKsCa?cluster=devnet)) released 0.005 SOL from the vault. `docs/reports/phase-2.md` written.
