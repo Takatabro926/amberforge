@@ -20,6 +20,17 @@ User-approved (explicit "TAK", cost card shown first: ~583k gas ≈ <$0.02).
   - ⏳ `addresses/{addr}/counters` — zeros; aggregates are async too (instance reports `indexed_internal_transactions_ratio: 0.58`)
   - Watcher armed for the token record to measure the lag.
 - **Lesson**: on Blockscout, "indexed" is layered — raw blocks/txs are immediate, while token registries and counters are derived asynchronously; don't treat `tokens/` 404 as "token doesn't exist".
+
+## 2026-07-14 — MAINNET: AMBR burn + BALT (B20) live — same address as Sepolia
+
+New standing rule from user: no per-tx confirmation below $3; cost card + TAK above.
+
+- **Burn 1,000 AMBR** (supply 1M → 999,000, mirroring Sepolia): [`0xbd1e0b9e…8758`](https://basescan.org/tx/0xbd1e0b9e18cfd5dbbbe6515de2f48561f8d2689f6484fb1e4523e5a809a98758)
+- **BALT created on mainnet** via B20 Factory — **deterministic address identical to Sepolia** (`(variant, sender, salt)` derivation is chain-independent): [`0xb2000000000000000000001B288D711aC70Fa6c5`](https://basescan.org/address/0xb2000000000000000000001B288D711aC70Fa6c5)
+  - createB20 (MINT_ROLE + cap 1M): [`0xdedb0188…ae44`](https://basescan.org/tx/0xdedb0188eafa7c993a6cdee031ba5057b5bf4885d1498dfb0543196f049dae44)
+  - mint 250,000 BALT: [`0xd166dcc7…a6db`](https://basescan.org/tx/0xd166dcc7c7d4bba657358f54d5aa8b6f12bb8b9a486cb1c08dcfaeaf1815a6db)
+  - Verified state: supply 250k / cap 1M / initialized ✅. All dry-run via `eth_call` first.
+- Total cost of the 3 txs ≈ 0.000006 ETH incl. L1 (deployer balance 0.007662 ETH).
 ## 2026-07-14 — Phase 4: Amberboard built, contracts live, first CUBE minted
 
 - **Research**: Farcaster-miniapp path is deprecated in Base docs — current flow is a standard web app + Base.dev registration (metadata + Builder Code = discoverability; no manifest).
