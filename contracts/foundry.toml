@@ -10,5 +10,5 @@ base-sepolia = "https://sepolia.base.org"
 base = "https://mainnet.base.org"
 
 [etherscan]
-base-sepolia = { key = "${ETHERSCAN_API_KEY}", url = "https://api-sepolia.basescan.org/api", chain = 84532 }
-base = { key = "${ETHERSCAN_API_KEY}", url = "https://api.basescan.org/api", chain = 8453 }
+base-sepolia = { key = "${ETHERSCAN_API_KEY}", chain = 84532 }
+base = { key = "${ETHERSCAN_API_KEY}", chain = 8453 }
