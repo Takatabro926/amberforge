@@ -4,6 +4,15 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-14 — Phase 2: Base↔Solana bridge — leg 1 complete, leg 2 half-done
+
+- Cloned official [base/bridge](https://github.com/base/bridge) repo (user-approved), bun 1.3.14 installed, TS client built. Env `testnet-prod` = Base Sepolia ↔ Solana Devnet.
+- Solana Devnet wallet created CLI-side: `CcBvQTP5PSeqG9gtajJDbAT198edpL1cL4G9yNCJMCyd` (key written straight to `~/.config/solana/id.json`, never displayed; repo's own generate-keypair prints secrets to stdout — avoided). Funded 0.5 SOL via web faucet (RPC airdrop was rate-limited).
+- **Solana→Base 0.01 SOL**: lock+relay tx [`5bFiL6q2…`](https://explorer.solana.com/tx/5bFiL6q2D8rNo3xqPcBZ8LVxBSUV7c2UZ7b86uHDXZFEiVrR924wrKewYtYEBrLvL8uktT9CjGapD9csy1UeD4m?cluster=devnet) → mint on Base [`0xb4d83583…`](https://sepolia.basescan.org/tx/0xb4d83583b9ec8fb924f99919b72ae7bcdc3a7b8c7dd3a8d19c7324dc1f347f5b). ~2 min end-to-end.
+- **Base→Solana 0.005 SOL**: burn [`0xb424a044…`](https://sepolia.basescan.org/tx/0xb424a044f62e64d4d7f91b788ce1b8e5f1da8d7477b9989934f205fb2347a95e); prove/finalize blocked — devnet Merkle root oracle ~17 days behind (root at Base block 43.4M vs burn at 44.14M). Poller armed (5-min interval, 2h); tokens safe, provable later.
+- **Lesson**: read the reference script before copying — its `/1e9` amount scaling is for ETH (18→9 decimals), would zero out a wSOL amount; for CrossChainERC20 `localAmount == remoteAmount`.
+- Details in `docs/bridge.md`.
+
 ## 2026-07-14 — Phase 1 COMPLETE: BALT (B20) launched, tokens.md, phase report
 
 - **B20 activation confirmed on-chain** (Sepolia): `isActivated(keccak256("base.b20_asset"))` → `true` (Beryl hardfork: Sepolia 2026-06-18, mainnet 2026-06-25).
