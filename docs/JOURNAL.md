@@ -4,6 +4,18 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-14 — Phase 4: Amberboard built, contracts live, first CUBE minted
+
+- **Research**: Farcaster-miniapp path is deprecated in Base docs — current flow is a standard web app + Base.dev registration (metadata + Builder Code = discoverability; no manifest).
+- **Contracts deployed & verified on Base Sepolia** (5/5 tests green):
+  - `AmberBoard` (cheer tally + leaderboard with AMBR balances): [`0x3723A33249C07CC5336aC778Da3fFab85a2d0647`](https://sepolia.basescan.org/address/0x3723A33249C07CC5336aC778Da3fFab85a2d0647)
+  - `AmberCubes` (CUBE, ERC-721, mint gated by ≥3 cheers, fully on-chain SVG metadata): [`0xEa501373F771eAaC2F6d93230815c2B389426aD9`](https://sepolia.basescan.org/address/0xEa501373F771eAaC2F6d93230815c2B389426aD9)
+- **Amberboard app** (`apps/amberboard`): Next.js 15 + wagmi + viem + coinbaseWallet; reads leaderboard/supply, writes cheer/mint; ERC-8021 Builder Code attribution wired at wagmi-config level via `ox/erc8021` (`NEXT_PUBLIC_BUILDER_CODE` env; note: ox ≥1.0 required — 0.6 lacks the erc8021 module). Serves `/.well-known/agent-card.json` for AmberMind. Production build + smoke test pass.
+- **Board seeded**: 3 × `cheer()` ([1](https://sepolia.basescan.org/tx/0x2c3dbce6d3803e3bacf92c4cfabac086d306dec8aea72d18fd35d15c68575084), [2](https://sepolia.basescan.org/tx/0xf2bac54cc2a286bc7d770e7ae4940063a89c228940c76e264b952487f0b3ef77), [3](https://sepolia.basescan.org/tx/0x7566fbc82894f4dcd0a50bf457744cb166ec24b24db7871e0d6fe96450196b5e)) + **Amber Cube #1 minted** ([`0xa9a3f615…6ad1`](https://sepolia.basescan.org/tx/0xa9a3f615ec5e276d35ac532dc1795961e841225da685d105a055566ded6c6ad1)) to deployer.
+- **Lesson**: sending a dependent tx (mint gated by prior txs' state) immediately after its prerequisites fails gas estimation against stale state — wait for confirmations before estimating, or pre-set gas.
+- `docs/ecosystem.md` written (Builder Rewards / Builder Grants / Base Batches / OP Retro / CDP).
+- Remaining (user-side): Builder Code from base.dev, `vercel login` + deploy, Base.dev registration.
+
 ## 2026-07-14 — Phase 2 COMPLETE (both directions) + Phase 3 started: AmberMind registered
 
 - **Bridge leg 2 finalized**: devnet root caught up ~35 min after burn; `prove-message` ([`4iQUjcBk…`](https://explorer.solana.com/tx/4iQUjcBkLgvvtAk4ynV9AFzexXLULEq4ty7VGbx42qpPSPEXgAuBJLUTEguqq3PyzZ2RD5mrMwq6VxHeAWLtujmu?cluster=devnet)) then `relay-message` ([`rhMNSDFZ…`](https://explorer.solana.com/tx/rhMNSDFZsSqwoCYMF8gP26iWp1atThkMiAmSFt4MwAGAdgrLjNTAnPbUCCH1WAgKZvwfieAQxBsbyGi8QUgKsCa?cluster=devnet)) released 0.005 SOL from the vault. `docs/reports/phase-2.md` written.
