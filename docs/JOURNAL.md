@@ -14,3 +14,4 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 - **Dependencies**: forge-std, OpenZeppelin Contracts v5.6.1.
 - **Config**: `foundry.toml` with `base-sepolia` (84532) and `base` (8453) RPC endpoints + BaseScan verification config; Etherscan API key reused from a previous project via git-ignored `.env`.
 - **Lesson**: `.gitignore` written *before* any secret-bearing file exists, so a leak by accidental commit is impossible from the start.
+- **Deployer key imported** into Foundry encrypted keystore `amberforge-deployer` (address verified: `0x23dd…D08C`). Keystore password is machine-generated, stored in `~/.foundry/keystores/amberforge-deployer.password` (chmod 600, outside the repo), enabling non-interactive signing via `--password-file`. Trade-off accepted for the testnet phase: anyone with local disk access could sign; before mainnet operations we will re-import with a user-memorized password.
