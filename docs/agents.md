@@ -18,7 +18,7 @@ rules in `agents/ambermind/AGENT_README.md`). Proof on mainnet:
 [`0x8eb990df…5580`](https://basescan.org/tx/0x8eb990dfeac77707185115e19dff5a5474e2fc743ed4847b530864f955c15580) —
 `cheer()` calldata ends with the agent's ERC-8021 suffix.
 
-## 1. Base MCP (installed; sign-in pending)
+## 1. Base MCP (installed; abandoned — passkey required)
 
 Base MCP (`https://mcp.base.org`) connects an AI assistant to a **Base Account** — a smart
 wallet secured by a passkey instead of a seed phrase. Installed into Claude Code with:
@@ -27,10 +27,8 @@ wallet secured by a passkey instead of a seed phrase. Installed into Claude Code
 claude mcp add --transport http --scope user base-mcp https://mcp.base.org
 ```
 
-Status: server registered, **awaiting passkey sign-in** (`/mcp` → base-mcp → Authenticate).
-Write operations always require per-transaction user approval via approval URLs — the agent
-prepares, the human confirms. Tool demos (portfolio, testnet send, message signing, history)
-will be recorded here after sign-in.
+Status: server registered, sign-in **abandoned by user decision** (passkey-based by design —
+see `docs/deferred.md`). Everything below was achieved DIY with the EOA keystore instead.
 
 ## 2. x402 micropayment ✅
 
@@ -73,14 +71,49 @@ Packages: `@x402/fetch` + `@x402/evm` (exact EVM scheme), signer via viem.
 Route chosen: **direct ERC-8004** over the Virtuals plugin — no MCP/SIWE login required,
 and it teaches the base standard that agent platforms (e.g. Brickken) build upon.
 
+**Mainnet registration** (2026-07-14): AmberMind is also registered on the Base Mainnet
+registry `0x8004A169…a432` as **agentId 59020**
+([tx `0xc24f69b0…dfdb`](https://basescan.org/tx/0xc24f69b01fcf97b5583a7121b123018213def297d32a3d80f576f3bbad49dfdb));
+the hosted agent card lists both registrations (mainnet 59020 + Sepolia 8095).
+
 References: [ERC-8004 spec](https://eips.ethereum.org/EIPS/eip-8004),
 [reference contracts](https://github.com/erc-8004/erc-8004-contracts).
+
+## 5. Autonomous sentinel run ✅ (mainnet, 2026-07-15)
+
+`agents/ambermind/autonomous.mjs` closes the loop from *identity* to *agency*: one run
+**observes** (Chainlink ETH/USD `0x71041ddd…Bb70`, feed freshness, current base fee, own
+AMBR inventory), **decides** against a 4-condition policy, and only then **acts** — no
+human signing inside the run.
+
+First live run: observed ETH/USD **$1880.62** (feed age 464 s), base fee 0.005 gwei,
+inventory 997,800 AMBR → all checks passed → `cheer()` executed with the agent's
+ERC-8021 suffix: [`0x4111fdce…3142`](https://basescan.org/tx/0x4111fdce3694f4b0c87983859d4227f3051f6662b9bb0f48837549d77f963142),
+cheers 7 → 8. When any check fails the agent stands down and prints its decision trace
+(verified via `--dry-run`).
+
+**DIY vs hosted**: this run signs locally with the EOA key and hand-rolls its policy.
+The hosted stack (Base MCP + Base Account) would add per-transaction human approval URLs,
+passkey custody, and Spend Permissions (onchain-enforced budgets) — i.e. guardrails around
+the same primitive, not a different capability.
+
+## Coverage: DIY vs deferred
+
+| Capability | DIY (EOA keystore) | Base Account / MCP path |
+|------------|--------------------|-------------------------|
+| Agent identity (ERC-8004) | ✅ Sepolia 8095 + mainnet 59020 | not required |
+| x402 micropayment | ✅ `pay-report.mjs` (EIP-3009, gasless) | MCP `x402` tool — deferred |
+| Attributed agent txs (ERC-8021) | ✅ `agent-tx.mjs`, code `bc_vsdrc64m` | not required |
+| Autonomous condition→action | ✅ `autonomous.mjs` (this page, §5) | hosted approval flows — deferred |
+| Wallet tool demos (portfolio/send/sign/history) | n/a (covered by cast/viem directly) | ❌ requires passkey sign-in — deferred |
+| Spend Permissions / budget enforcement | ❌ not replicable with bare EOA | deferred (see `docs/deferred.md`) |
 
 ## Phase 3 acceptance status
 
 | Criterion | Status |
 |-----------|--------|
-| Base MCP working end-to-end | 🔶 installed, sign-in + tool demo pending (user-deferred) |
+| Base MCP working end-to-end | ❌ abandoned (passkey) — logged in `docs/deferred.md` |
 | One x402 payment | ✅ |
-| AmberMind exists | ✅ agentId 8095 |
+| AmberMind exists | ✅ agentId 8095 (Sepolia) + 59020 (mainnet) |
+| Autonomous action | ✅ sentinel run, tx `0x4111fdce…3142` |
 | docs/agents.md | ✅ this file |
