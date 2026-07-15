@@ -4,6 +4,22 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — Gas paid in USDC on MAINNET (EPv0.7 SimpleAccount) — Sepolia gap closed
+
+- Session-start parity audit (new standing rule: every Sepolia flow must get its mainnet
+  finał) found one closable gap: the Pimlico ERC-20 paymaster run existed only on Sepolia.
+- **Mainnet run** (`scripts/erc20-gas-v07-mainnet.mjs`, helper EOA as owner — mirroring
+  tester on Sepolia): counterfactual SimpleAccount `0x4AE2F6a3c1140944e3b68d14A08D5E141D8A3b51`
+  funded with 0.30 USDC from deployer
+  ([`0x01945cc0…b884`](https://basescan.org/tx/0x01945cc00b0805750c006004df98eb1d031de842e5e5990fecc2e8bfbadbb884)),
+  then a single userOp deployed the account **and** called `cheer()` with gas paid
+  entirely in USDC (account held 0 ETH) —
+  [`0xeefcdba8…9276`](https://basescan.org/tx/0xeefcdba86432cc7c73e45535c767eb2c9811a52123c56b9b496ee6a8bfa19276).
+  Board cheers 9 → 10. Total gas cost: **0.006784 USDC** (~0.7¢) for deploy + call.
+- Remaining Sepolia-only items are both externally blocked: TrailKeeper as mainnet x402
+  seller (needs user's CDP API keys) and the Sepolia TRAIL ownership transfer (testnet
+  housekeeping, not a mainnet gap).
+
 ## 2026-07-15 — L2→L1 withdrawal PROVEN on L1
 
 - **Prove executed** (act two of three): the 0.001 ETH withdrawal
