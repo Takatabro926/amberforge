@@ -4,6 +4,19 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — First DEX swap + first mainnet x402 payment
+
+- **Swap** (first ever): 0.0005 ETH → 0.938325 USDC, Uniswap V3 `SwapRouter02`
+  `exactInputSingle` with ETH via `msg.value`, min-out from Chainlink, dry-run first:
+  [`0x992263a9…1b68`](https://basescan.org/tx/0x992263a9ad1dfd2724859173511a43bc462bd6acf1da7a4e8ad31fd4514f1b68)
+- **x402 on mainnet** (first ever; Sepolia → production): found the x402 Trust Oracle
+  ($0.002/call) via the Bazaar discovery API, paid with the fresh USDC — settlement
+  [`0xd8f10d01…5a21`](https://basescan.org/tx/0xd8f10d0173d25db1e532d3f907889669d3bbe4527a8fba123828bc81e3e15a21)
+  (EIP-3009, gasless for payer). **Debugging story**: client v2.18 sends
+  `PAYMENT-SIGNATURE`, live sellers still expect `X-PAYMENT` — dual-header client in
+  `agents/ambermind/pay-x402.mjs`; failed attempts cost nothing (settlement happens
+  only server-side). Details: `docs/mainnet-explorations.md` §8–9.
+
 ## 2026-07-15 — Seven first-time mainnet mechanisms in one session
 
 Full write-up with all hashes: `docs/mainnet-explorations.md`. Headlines:

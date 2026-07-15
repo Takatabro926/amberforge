@@ -77,6 +77,38 @@ submitted it and paid the gas:
 → allowance deployer→helper = 50 BALT, `nonces(deployer)` 0→1. This is the same
 signature-instead-of-approval-tx idea x402/EIP-3009 uses, in its ERC-20-native form.
 
+## 8. First DEX swap — ETH → USDC on Uniswap V3 (2026-07-15, session 2)
+
+`exactInputSingle` on **SwapRouter02** `0x2626664c…e481` (identity triple-checked:
+BaseScan name, `WETH9()`, `factory()` + pool existence), paying with raw ETH via
+`msg.value` (the router wraps internally). 0.0005 ETH → **0.938325 USDC** on the
+0.05% WETH/USDC pool; min-out derived from the Chainlink price (0.92), dry-run via
+`eth_call` said 0.938093 — execution landed slightly better:
+[`0x992263a9…1b68`](https://basescan.org/tx/0x992263a9ad1dfd2724859173511a43bc462bd6acf1da7a4e8ad31fd4514f1b68)
+
+The deployer now holds mainnet USDC — which unlocked:
+
+## 9. First mainnet x402 payment — via the Bazaar
+
+Discovered live sellers through the **x402 Bazaar** discovery API
+(`api.cdp.coinbase.com/platform/v2/x402/discovery/resources`, 138 Base-mainnet
+listings) and paid the cheapest useful one: **x402 Trust Oracle**
+(`api.x402oracle.com/v1/trade-check`, $0.002/call — a reputation check *about
+other x402 resources*: liveness, price drift, payTo stability).
+
+- Settlement (EIP-3009 `transferWithAuthorization`, gasless for payer):
+  [`0xd8f10d01…5a21`](https://basescan.org/tx/0xd8f10d0173d25db1e532d3f907889669d3bbe4527a8fba123828bc81e3e15a21)
+  — 0.002 USDC deployer → oracle's `payTo`.
+- **Interop lesson**: the wild is mid-migration on the payment header name.
+  `@x402` v2.18 emits `PAYMENT-SIGNATURE`; this seller (and others) still reads
+  `X-PAYMENT`. Failed attempts cost nothing (signature ≠ settlement — money moves
+  only when the seller's facilitator executes the authorization). Fix shipped in
+  `agents/ambermind/pay-x402.mjs`: send the same encoded payload under **both**
+  names.
+- Meta-proof: asked the oracle to trade-check **its own endpoint** — it reported
+  100% success rate and a stable payTo. Vouched for itself; the USDC transfer
+  agrees.
+
 ## Recurring lesson of the day
 
 Three separate times a `view` read **immediately after** a confirmed tx returned
