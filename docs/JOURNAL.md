@@ -4,6 +4,33 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — ERC-6551 TBA for Cube #1, Uniswap V4 pool, Flashblocks probe
+
+- **ERC-8004 Validation Registry: blocked upstream.** The erc-8004-contracts repo lists
+  NO ValidationRegistry deployment on any network — that part of the spec is being
+  revised with the TEE community. Re-check later in the year.
+- **ERC-6551 token-bound account**: Cube #1 now owns a wallet. Canonical registry
+  `createAccount` → TBA `0x03B40DEF1Db5EBe59a4A563F1E6258927Ea82482`
+  ([`0x1c3ec402…abd0`](https://basescan.org/tx/0x1c3ec4021e70582bf24f9439d1778f23b62d0bbb7a8c95f2d0a94285090fabd0)),
+  proxy initialized to Tokenbound AccountV3, funded with 1 AMBR, then `execute()`d a
+  0.5 AMBR transfer signed by the NFT's owner
+  ([`0x32c6e4e6…d718`](https://basescan.org/tx/0x32c6e4e6af65781e639c5bd18b9fae41ab6b8f5fffac35a6402b20c2946ed718)).
+  Sell the Cube and its bank account goes with it.
+- **Uniswap V4** (`scripts/univ4-ambr.mjs`): hookless native-ETH/AMBR pool initialized
+  on the PoolManager singleton (no factory deploy, ETH without WETH — both new vs V3)
+  ([`0x31bfe3cd…c5ac`](https://basescan.org/tx/0x31bfe3cd1f17f3f5ad5127c3c6c7fbe7a3b23b1e1e8e79d3acfd04ad4caac5ac)),
+  price 10,000 AMBR/ETH; full-range position **#2818983** minted via Actions-encoded
+  `modifyLiquidities` + Permit2 (~0.0002 ETH + 2 AMBR, SWEEP refunded the excess)
+  ([`0x15e80db8…e298`](https://basescan.org/tx/0x15e80db831032548a7cbe44f6da4325aa79246e1b57482fc2546b472532fe298)).
+  No self-swap — trading against our own liquidity proves nothing.
+- **Flashblocks probe** (`scripts/flashblocks-probe.mjs`, 5 sends): with local signing
+  and polling parallel to dispatch, `eth_sendRawTransaction` acks in ~140 ms and the
+  **receipt is served 380–480 ms after dispatch** — consistently faster than the 2 s
+  block cadence, i.e. the public HTTP endpoint answers from Flashblocks preconfirmed
+  state. `base_transactionStatus` returns `{"status":"Unknown"}` through the public
+  load balancer; the 200 ms preconf stream needs provider WebSockets.
+- Stale-read tally: ~10 (TBA AMBR balance and post-mint ETH balance both lagged).
+
 ## 2026-07-15 — Legacy position cleanup + first NATIVE L1→L2 deposit
 
 Wallet-history audit (727 txs since 2023-08 — this deployer had a long pre-Amberforge
