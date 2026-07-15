@@ -4,6 +4,19 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — Seven first-time mainnet mechanisms in one session
+
+Full write-up with all hashes: `docs/mainnet-explorations.md`. Headlines:
+
+- **WETH wrap/unwrap** (predeploy): [`0xa0082af5…7dca`](https://basescan.org/tx/0xa0082af5a056146fbbcb6a58e9362c30f47c5ce4294c42be0ee88359b24c7dca), [`0xa976ff34…d969`](https://basescan.org/tx/0xa976ff3417ea875b6f6959999e2775a8aa4b713c014bf26b23aa2c044609d969)
+- **Multicall3 atomic batch** (deposit+transfer, one tx): [`0xc5357076…b4ae`](https://basescan.org/tx/0xc53570763e60c4d156461f09ff1416699c038a6a858086e9c29a7e65b12eb4ae)
+- **CREATE2 deterministic deploy** — `AmberAnchor` at [`0x7559EaCa…E6A1`](https://basescan.org/address/0x7559EaCa8Eaa1705B5a7C9b25Fd508A41326E6A1), verified; 3 new tests
+- **Basename text records** on `evmpirate.base.eth` (`com.github`, `url`) via resolver multicall: [`0x6a566fb1…71a0`](https://basescan.org/tx/0x6a566fb1a36a81ea8c2d40d14ec087b8d0baf42ae6db114901b5daa31df471a0)
+- **EAS schema + attestation** of the autonomous run (predeploys `0x…0020/0x…0021`), attestation UID `0x7b8d23cb…d9f2`
+- **First ERC-721 transfer** — Cube #1 → helper: [`0xbf147fec…231a`](https://basescan.org/tx/0xbf147fec072b4409ba695fb65d5cc26fa78f4e27c008a53fb7169471fc28231a)
+- **EIP-2612 permit on BALT** — offline signature, helper paid gas, allowance 50 BALT: [`0x08b5068d…3ffb`](https://basescan.org/tx/0x08b5068d99352ac2382c66d5a9d56540ad61ae5a95275c9a895fae8a20903ffb)
+- **Lesson (recurring, now 3×)**: public RPC serves stale reads right after a receipt — re-read before concluding anything.
+
 ## 2026-07-15 — AmberMind's first autonomous action (mainnet) + repo published to GitHub
 
 - **Autonomous sentinel run** (`agents/ambermind/autonomous.mjs`): observe → decide → act,
