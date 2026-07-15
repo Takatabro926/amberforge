@@ -4,6 +4,22 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — AmberMind's first autonomous action (mainnet) + repo published to GitHub
+
+- **Autonomous sentinel run** (`agents/ambermind/autonomous.mjs`): observe → decide → act,
+  no human signing inside the run. Observed ETH/USD **$1880.62** from Chainlink
+  `0x71041ddd…Bb70` (feed verified on-chain via `description()`, age 464 s), base fee
+  0.005 gwei, inventory 997,800 AMBR → 4/4 policy checks passed → `cheer()` with the
+  agent's ERC-8021 suffix: [`0x4111fdce…3142`](https://basescan.org/tx/0x4111fdce3694f4b0c87983859d4227f3051f6662b9bb0f48837549d77f963142),
+  cheers 7 → 8, suffix confirmed in calldata. Dry-run mode prints the decision trace only.
+- **Lesson**: a `readContract` immediately after `waitForTransactionReceipt` on the
+  load-balanced public RPC returned pre-tx state (cheers 7 → "7"); a fresh `cast call`
+  confirmed 8 — same stale-node class as the Sepolia nonce lesson.
+- **Repo published**: https://github.com/Takatabro926/amberforge (public). Full history
+  re-authored to the GitHub-linked email before first push (repo had never left the machine).
+- `docs/agents.md` gained the DIY-vs-deferred coverage matrix; `docs/deferred.md` now
+  lists exactly what stays parked behind Base Account (passkey) and the substitutes shipped.
+
 ## 2026-07-14 — MAINNET: AMBR full lifecycle complete (mirrors Sepolia)
 
 Executed 23:50 local, minutes before the session hit its usage limit — the txs all landed
