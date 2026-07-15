@@ -4,6 +4,18 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — Agent avatar record + first Sablier stream
+
+- **Avatar on `ambermind.evmpirate.base.eth`**: CAIP-19 pointer at Cube #1
+  (`eip155:8453/erc721:0x3C50…48Ff/1`) via resolver `setText`
+  ([`0xeb712af9…2886`](https://basescan.org/tx/0xeb712af9fead5ec32a8c0aeaa115924e5109e635a84b42137d4eec73cd852886)).
+  The parent `evmpirate.base.eth` already had a user-set IPFS avatar — left untouched.
+- **First token stream** (SablierLockup v4 `0xc19a…C0A`): 50 AMBR streaming linearly
+  to the helper over 30 days, per-second granularity, cancelable+transferable —
+  **stream #867** ([`0x1d5478c5…07b0`](https://basescan.org/tx/0x1d5478c5cd42dd959a641ba4b50a046b2b24b75113b4cf1a4a70351f91d107b0)).
+  Recipient holds the stream as an NFT and can withdraw the streamed portion anytime;
+  2 s after creation `streamedAmountOf` showed exactly 2×(50/2,592,000) AMBR.
+
 ## 2026-07-15 — ERC-6551 TBA for Cube #1, Uniswap V4 pool, Flashblocks probe
 
 - **ERC-8004 Validation Registry: blocked upstream.** The erc-8004-contracts repo lists
