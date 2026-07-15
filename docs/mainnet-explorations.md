@@ -109,9 +109,46 @@ other x402 resources*: liveness, price drift, payTo stability).
   100% success rate and a stable payTo. Vouched for itself; the USDC transfer
   agrees.
 
+## 10. Approval-family completions (2026-07-15, session 3)
+
+Three mechanisms from the ERC-20/721 approval family the project had documented
+but never exercised on mainnet:
+
+- **`burnFrom`** (ERC20Burnable's second path): deployer approved 100 AMBR
+  ([`0x2a8ba1f9…1d76`](https://basescan.org/tx/0x2a8ba1f91d88835ade68a50b24b38d4cdae99aaf40b3f1e84c05cbe8cca91d76)),
+  helper burned 50 **from the deployer's balance** — supply 998,950 now:
+  [`0xc498da7f…c7b8`](https://basescan.org/tx/0xc498da7f590609c9fe3fb505289aced7dc2cf626e2f85c10dc2d8d591049c7b8)
+- **Spending a permit allowance**: yesterday's offline-signed permit (50 BALT)
+  got used for real — helper `transferFrom` 25 BALT, allowance 50 → 25:
+  [`0x9805119d…a4e7`](https://basescan.org/tx/0x9805119dfa21e8b0316c7d4a5712798f4d6dbae95bdac4d65425b8c7e32aa4e7)
+- **ERC-721 `approve` + third-party `transferFrom`**: helper approved the
+  deployer for Cube #1 ([`0x683aed7a…d1da`](https://basescan.org/tx/0x683aed7a9403898d5421db38f2cd44a6324250d1d19b88cdf9424a3cc42cd1da)),
+  deployer pulled it back **as approved spender, not owner**:
+  [`0x0694343c…5879`](https://basescan.org/tx/0x0694343cfdd691cd82cc8c83c19d44dd04a98edc74af907943d1bd6e58d55879)
+
+## 11. EIP-7702 on mainnet — sponsored delegation + native EOA batching
+
+The Sepolia AA demo, graduated to production. Implementation address recovered
+**from the Sepolia tester's own delegation designator** (`0xef0100…`), then
+confirmed byte-for-byte as verified `Simple7702Account` on mainnet.
+
+- **Type-4 delegation tx, sponsored**: the helper signed the EIP-7702
+  authorization offline; the **deployer** sent the transaction and paid its gas
+  (auth nonce = helper's account nonce, consumed on execution — nonce 5 → 6):
+  [`0xfe53f357…fce4`](https://basescan.org/tx/0xfe53f357c8e488e9f67da2936ce036a99eaf708603c9ad56ade25aad550ffce4)
+  — helper's code is now `0xef0100e6cae83b…555b`; it is still an EOA.
+- **Atomic batch from an EOA**: helper called `executeBatch` **on itself**
+  (`msg.sender == address(this)` satisfies Simple7702Account's guard):
+  `cheer()` on AmberBoard **and** a 1 AMBR transfer in one transaction:
+  [`0xf3bde33f…2c02`](https://basescan.org/tx/0xf3bde33fd59ea7476140fcb062da20e81c9a4632e684ef9307740312a38d2c02)
+
+This is the primitive smart wallets are converging on: an EOA that can batch,
+without deploying a contract account or changing address.
+
 ## Recurring lesson of the day
 
-Three separate times a `view` read **immediately after** a confirmed tx returned
-pre-tx state (cheers 7→"7", allowance "0", earlier the Sepolia nonce): the public
-load-balanced RPC serves reads from nodes that momentarily lag the head. Never
-alarm on a stale read right after a receipt — re-read, or pin a node.
+Four separate times a read **immediately after** a confirmed tx returned
+pre-tx state (cheers 7→"7", allowance "0", the 7702 delegation code "0x", earlier
+the Sepolia nonce): the public load-balanced RPC serves reads from nodes that
+momentarily lag the head. Never alarm on a stale read right after a receipt —
+re-read, or pin a node.
