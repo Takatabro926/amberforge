@@ -30,3 +30,12 @@ the facilitator, not agent-sent transactions.)
 - ERC-8004: Base Mainnet agentId **59020** (registry `0x8004A169…a432`),
   Base Sepolia agentId **8095** (registry `0x8004A818…BD9e`)
 - Agent card: https://amberforge-board.vercel.app/.well-known/agent-card.json
+
+## Sentinel loop (cron)
+
+`cron-run.sh` runs the observe→decide→act cycle on a schedule (`17 */3 * * *` in the
+operator's crontab, WSL2 — runs only while the machine/WSL instance is up). The on-chain
+cadence is deliberately irregular: random 0–45 min jitter, a 40% random stand-down per
+run, and a hard cap of 2 actions per UTC day — on top of the agent's own 4-check policy.
+Fixed-interval on-chain activity is a bot signature we intentionally avoid; a run that
+stands down costs nothing. Log: `logs/cron.log` (git-ignored).

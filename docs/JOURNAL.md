@@ -4,6 +4,31 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — Sentinel loop on cron, activity feed, app test suite, EMBR revenue check
+
+Four items from the ideas list, in one sitting:
+
+- **AmberMind sentinel loop on cron**: `agents/ambermind/cron-run.sh` wraps
+  `autonomous.mjs` — crontab `17 */3 * * *`, plus 0–45 min random jitter, 40% random
+  stand-down per run and a 2-actions-per-UTC-day cap, so the on-chain cadence never
+  falls into a fixed rhythm (bot signature). First loop-driven action landed:
+  [`0x654d2962…43e9`](https://basescan.org/tx/0x654d2962d6003b16597eedb8e55001ed2918fbe9665c12770ef52cccd59243e9)
+  (board cheers → 11, with ERC-8021 suffix). Caveat: WSL2 cron runs only while the
+  machine is up. Stale-read lesson struck again (~8th time): post-receipt `cheers()`
+  read returned the pre-tx value.
+- **On-chain activity feed** in Amberboard: `lib/activity.ts` walks `eth_getLogs` in
+  newest-first 10,000-block windows (public RPC hard cap, error -32614) with early
+  exit, merging `Cheered` events and Cube mint `Transfer`s; UI panel with time-ago
+  stamps, 60 s refetch. Verified against live mainnet data via an opt-in
+  `RUN_LIVE=1` integration test.
+- **App test suite**: vitest, 21 unit tests over `lib/` (ERC-8021 suffix round-trip,
+  checksummed addresses, `cheer()` selector = raw `0x34e5a1f5` used by agent scripts,
+  registry address regression guard for the …a432/…b432 typo, log windowing math);
+  new `app` job in CI.
+- **EMBR revenue check** (read-only): `creatorRevenue(deployer)` = **0 ETH**, BidWall
+  position empty — no swaps have occurred since launch, so no fees accrued. Honest
+  zero; mechanism confirmed working via `@flaunch/sdk`.
+
 ## 2026-07-15 — Gas paid in USDC on MAINNET (EPv0.7 SimpleAccount) — Sepolia gap closed
 
 - Session-start parity audit (new standing rule: every Sepolia flow must get its mainnet
