@@ -4,6 +4,26 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — setAgentWallet + app footprint panel + Sepolia mirror
+
+- **ERC-8004 `setAgentWallet` (mainnet)**: AmberMind #59020 now has a dedicated revenue
+  wallet (the helper), set with the wallet's own EIP-712 consent
+  (`AgentWalletSet(uint256 agentId,address newWallet,address owner,uint256 deadline)`,
+  domain `ERC8004IdentityRegistry` v1): [`0x112bace1…a7ad`](https://basescan.org/tx/0x112bace11e2e7a15ca7c096c26272ae3304f5779e8a9b4451e14a15d046ea7ad).
+  Gotchas: registry address had a one-char typo in our notes (recovered the real one from
+  the registration tx's `to`); ABI recovered via EIP-1967 impl slot (same impl as Sepolia);
+  `MAX_DEADLINE_DELAY = 5 minutes` — consent signatures must be fresh.
+- **App**: "onchain footprint" panel live on amberforge-board.vercel.app — reads
+  `AmberAnchor.REPO()` and `getAgentWallet(59020)` from chain, links the EAS attestation,
+  shows `ambermind.evmpirate.base.eth`.
+- **Sepolia mirror**: AmberAnchor deployed via CREATE2 at the **identical address**
+  `0x7559EaCa…E6A1` ([`0x0bbeb34d…a242`](https://sepolia.basescan.org/tx/0x0bbeb34dc60f89f38f85e377a3b7eb50890bc1e44a6d86b8a628240d754fa242), verified);
+  EAS schema registered — **UID identical to mainnet** (`0xa50f4253…`, pure function of
+  schema+resolver+revocable, chain-independent) + `sepolia-mirror` attestation
+  ([`0x462ea449…7e35`](https://sepolia.basescan.org/tx/0x462ea44925a8d4238f3548b104f759883638b2a63736e62a6fa74ce668197e35));
+  tester's existing 7702 delegation reused for an atomic `executeBatch` (cheer + AMBR
+  transfer): [`0x5f811b12…156e`](https://sepolia.basescan.org/tx/0x5f811b1250690b2170e12b51a22123d754e507a1019a7311a5d318f171fa156e).
+
 ## 2026-07-15 — Agent got a name + EAS revocation lifecycle
 
 - **`ambermind.evmpirate.base.eth` live**: subname minted straight on the Basenames
