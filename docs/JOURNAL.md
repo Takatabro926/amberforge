@@ -4,6 +4,19 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — L2→L1 withdrawal PROVEN on L1
+
+- **Prove executed** (act two of three): the 0.001 ETH withdrawal
+  ([`0x39359854…e56b`](https://basescan.org/tx/0x393598544a55f1d5dca8e434d250e6d28bd1f9ff6a6cc1199804587795aee56b))
+  reached `ready-to-prove` and was proven on Ethereum L1 —
+  [`0xaa0bec22…ff9b`](https://etherscan.io/tx/0xaa0bec22ebc3483cdc1c2c3c8fe85390393cca0bd9d95f712d8a23bbce9eff9b).
+  Status now `waiting-to-finalize`; **finalize after ~2026-07-22** (7-day challenge window),
+  same driver: `scripts/l2l1-withdraw.mjs finalize <tx>`.
+- Operational lesson: the background prove-watcher from the previous session died with the
+  session (scratchpad scripts are ephemeral) — the prove was caught by a manual status check
+  at the start of this session. Calendar-style follow-ups belong in the journal/resume notes,
+  not in session-local processes.
+
 ## 2026-07-15 — L2→L1 withdrawal initiated (user-approved) + Reputation Registry
 
 - **Native L2→L1 withdrawal** (user "TAK" — L1 gas involved): 0.001 ETH initiated on Base
