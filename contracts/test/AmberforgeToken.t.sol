@@ -40,9 +40,7 @@ contract AmberforgeTokenTest is Test {
 
     function test_RevertWhen_TransferExceedsBalance() public {
         vm.prank(alice);
-        vm.expectRevert(
-            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, alice, 0, 1)
-        );
+        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, alice, 0, 1));
         token.transfer(bob, 1);
     }
 
@@ -61,9 +59,7 @@ contract AmberforgeTokenTest is Test {
 
     function test_RevertWhen_TransferFromWithoutAllowance() public {
         vm.prank(alice);
-        vm.expectRevert(
-            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, alice, 0, 1e18)
-        );
+        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, alice, 0, 1e18));
         token.transferFrom(deployer, bob, 1e18);
     }
 

@@ -27,9 +27,8 @@ contract AmberAnchorTest is Test {
         bytes32 salt = keccak256("amberforge-anchor");
         address factory = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
         bytes32 initCodeHash = keccak256(type(AmberAnchor).creationCode);
-        address predicted = address(
-            uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff), factory, salt, initCodeHash))))
-        );
+        address predicted =
+            address(uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff), factory, salt, initCodeHash)))));
         assertTrue(predicted != address(0));
     }
 }
