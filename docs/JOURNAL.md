@@ -4,6 +4,22 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — Test suite doubled + approval family + EIP-7702 LIVE on mainnet
+
+- **Tests 14 → 29** (all green, CI enforces `forge fmt` now): new AmberCubes suite
+  (mint gate, sequential ids, approvals, on-chain metadata decode, fuzz) + AmberBoard
+  additions (Cheered event payloads, participant dedup, live balances, consistency fuzz).
+- **Approval family on mainnet** (docs/mainnet-explorations.md §10): `burnFrom` 50 AMBR
+  (supply → 998,950), spent yesterday's permit allowance (25 of 50 BALT), ERC-721
+  `approve` + third-party `transferFrom` (Cube #1 back at deployer).
+- **EIP-7702 on mainnet** (§11): helper's authorization signed offline, **deployer
+  sponsored the type-4 delegation tx** ([`0xfe53f357…fce4`](https://basescan.org/tx/0xfe53f357c8e488e9f67da2936ce036a99eaf708603c9ad56ade25aad550ffce4));
+  helper EOA then executed an **atomic batch on itself** — cheer + AMBR transfer in one tx
+  ([`0xf3bde33f…2c02`](https://basescan.org/tx/0xf3bde33fd59ea7476140fcb062da20e81c9a4632e684ef9307740312a38d2c02)).
+  Impl address recovered from the Sepolia tester's delegation designator and verified
+  as the same `Simple7702Account` on mainnet.
+- Stale-read lesson count: 4 (this time the freshly-set 7702 code read as "0x").
+
 ## 2026-07-15 — First DEX swap + first mainnet x402 payment
 
 - **Swap** (first ever): 0.0005 ETH → 0.938325 USDC, Uniswap V3 `SwapRouter02`
