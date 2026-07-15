@@ -4,6 +4,32 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — Legacy position cleanup + first NATIVE L1→L2 deposit
+
+Wallet-history audit (727 txs since 2023-08 — this deployer had a long pre-Amberforge
+life) surfaced live legacy DeFi positions. Recovered, all in one pass:
+
+| Action | Tx |
+|--------|----|
+| Aave v3 withdraw 0.1086 USDbC (aBasUSDbC, deprecated bridged USDC) | [`0xa480e485…e900`](https://basescan.org/tx/0xa480e485cdb9e8068c0474f355334cc14eb92dbbd0d5513ce11b2286e4cbe900) |
+| Seamless withdraw 0.0001 WETH (sWETH) | [`0x621c61fd…5753`](https://basescan.org/tx/0x621c61fd7db5c27fb7c757f32671b14dfed53da778347debc1a6763dc7295753) |
+| Stargate V1 `instantRedeemLocal` ~1.0 USDbC (S*USDbC LP) | [`0x0a02ca14…9ded`](https://basescan.org/tx/0x0a02ca14251d521deab34d203db9801b04d1a09f184e45a73f6b019a2b6b9ded) |
+| Burn empty Uniswap V3 position NFT #138546 (AMKT/WETH shell, liquidity 0) | [`0x3492ecc8…1f77`](https://basescan.org/tx/0x3492ecc862a2326e03119b2bce79766cf970da64fa5919b9748fda55ecea1f77) |
+| Consolidate: swap 1.109 USDbC → 1.109 USDC (fee-100 pool) | [`0x505872b6…a43b`](https://basescan.org/tx/0x505872b6ce21989ae8765fc71bc256aaa325f1e012d89fc405a1ced444e0a43b) |
+| Unwrap WETH dust | [`0x74215d65…949b`](https://basescan.org/tx/0x74215d65210979a127518bdb1249b20c3ff1ab0a3bbebd22b797f4ba0e0c949b) |
+
+Deployer USDC: 0.634 → **1.743**. Skipped deliberately: veMAV (1 MAV locked until
+2028-04), HorizonDEX position #3862 (3 wei of liquidity, nonstandard ABI),
+Superform SP / rEUL / MORPHO / SEAM (holdings, not closable positions), and every
+scam airdrop token (fake UЅDС/CAKE/AERO "claims" — never interact).
+
+**First native L1→L2 deposit** (`scripts/l1l2-deposit.mjs`, viem op-stack
+`buildDepositTransaction` → `depositTransaction`): 0.002 ETH, L1 tx
+[`0xb3d7a0fb…9b17`](https://etherscan.io/tx/0xb3d7a0fb12793140666f8bb1b2922789a1b1535a721a1fec3493153e03f39b17)
+→ derived L2 tx `0xe252f0b4…6433`, minted in ~2 min. All historic bridging from this
+wallet was third-party (Stargate/Across/LiFi/Axelar) — the native portal was untouched
+until now; with the pending withdrawal this completes the native round trip.
+
 ## 2026-07-15 — Sentinel loop on cron, activity feed, app test suite, EMBR revenue check
 
 Four items from the ideas list, in one sitting:
