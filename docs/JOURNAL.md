@@ -4,6 +4,22 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — Agent got a name + EAS revocation lifecycle
+
+- **`ambermind.evmpirate.base.eth` live**: subname minted straight on the Basenames
+  Registry (`setSubnodeRecord`, [`0xb773bee6…6b85`](https://basescan.org/tx/0xb773bee6c8834f3fc51d96ac0a16668897aa5688a468134ea365744c19cb6b85)),
+  records set via resolver multicall ([`0x12fb1628…c07e`](https://basescan.org/tx/0x12fb16288619dec93f7ba4fcc187f27714b02708523ab0a1edf0aa36b805c07e)):
+  `addr` → agent wallet, `url` → agent card. The ERC-8004 identity is now reachable by ENS name.
+- **EAS revoke**: scratch attestation created and revoked
+  ([`0x3a21036c…0444`](https://basescan.org/tx/0x3a21036ce80cf4bbcf6c169c2fbbfedc90c811ce3ea1c0d3294a961ddebd0444));
+  `revocationTime` stamped on-chain 36 s after creation. Details §12–13 of
+  docs/mainnet-explorations.md.
+- Lessons: mainnet reproduced the Sepolia `nonce too low` on rapid sends; and bash's
+  readonly `UID` variable ate an attestation UID (recovered from the receipt).
+- ERC-8004 `setAgentWallet` on mainnet: **blocked for now** — registry source unverified
+  on BaseScan, not calling an unverified selector blind; next step is recovering the ABI
+  via the proxy implementation slot.
+
 ## 2026-07-15 — Test suite doubled + approval family + EIP-7702 LIVE on mainnet
 
 - **Tests 14 → 29** (all green, CI enforces `forge fmt` now): new AmberCubes suite
