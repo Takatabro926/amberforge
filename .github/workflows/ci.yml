@@ -15,6 +15,10 @@ jobs:
 
       - uses: foundry-rs/foundry-toolchain@v1
 
+      - name: Format check
+        run: forge fmt --check src test
+        working-directory: contracts
+
       - name: Build
         run: forge build
         working-directory: contracts
