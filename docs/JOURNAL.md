@@ -4,6 +4,28 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-14 — MAINNET: AMBR full lifecycle complete (mirrors Sepolia)
+
+Executed 23:50 local, minutes before the session hit its usage limit — the txs all landed
+but went unjournaled; reconstructed and verified from chain on 2026-07-15.
+
+Helper wallet `0x4D0c9faE02a3596Bf1D888D27c2914641Fe0fB5a` (throwaway, key in git-ignored `.env`),
+playing the tester role from the Sepolia lifecycle.
+
+| # | Action | Tx |
+|---|--------|----|
+| 1 | Fund helper with 0.00003 ETH (gas) | [`0xdbb0e677…b586`](https://basescan.org/tx/0xdbb0e677c8e726a4ab893ac40c00bdcc171635627607d646ca8208e2b76fb586) |
+| 2 | `transfer` deployer → helper, 1,000 AMBR | [`0x043823d4…a35f`](https://basescan.org/tx/0x043823d48358d38942148236c125711df0eaa8a85272cfa6947d2454688aa35f) |
+| 3 | `approve` helper for 500 AMBR | [`0x52e070fd…6c81`](https://basescan.org/tx/0x52e070fd7584c082b9e31a26de7873e81a54a019eacf1beeaf7f073a0d776c81) |
+| 4 | `transferFrom` (signed by helper) deployer → helper, 200 AMBR | [`0xb0e033b9…74cd4`](https://basescan.org/tx/0xb0e033b9ed5bafaf2588e743c342806f9e731ffdcffd89d1ed21f1c3ad874cd4) |
+
+(The `burn` step of the Sepolia lifecycle was already done on mainnet earlier the same day —
+supply 999,000.)
+
+Final state verified on-chain 2026-07-15 — **identical to Sepolia's end state**:
+totalSupply 999,000 AMBR; deployer 997,800; helper 1,200; remaining allowance 300.
+No pending txs on any wallet (latest nonce == pending nonce); nothing left mid-flight.
+
 ## 2026-07-14 — MAINNET: AMBR deployed to Base Mainnet + Blockscout API assessment
 
 User-approved (explicit "TAK", cost card shown first: ~583k gas ≈ <$0.02).
