@@ -4,6 +4,23 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-15 — L2→L1 withdrawal initiated (user-approved) + Reputation Registry
+
+- **Native L2→L1 withdrawal** (user "TAK" — L1 gas involved): 0.001 ETH initiated on Base
+  via `L2StandardBridge.withdraw` ([`0x39359854…e56b`](https://basescan.org/tx/0x393598544a55f1d5dca8e434d250e6d28bd1f9ff6a6cc1199804587795aee56b), block 48,669,092).
+  Three-act structure ahead: **prove** on L1 once a dispute game covers the block
+  (watcher armed, `scripts/l2l1-withdraw.mjs prove`), **finalize** after the 7-day
+  challenge window (calendar item). L1 gas at 0.17 gwei ⇒ both L1 steps well under $0.50;
+  deployer holds 0.00705 L1 ETH.
+- **ERC-8004 Reputation Registry** (`0x8004BAa1…9b63`, impl via EIP-1967, verified):
+  helper wallet rated **TrailKeeper #58971** (the previous program's agent — owned by its
+  own agent wallet `0x6D48…639D`, so no self-feedback conflict) for the historical x402
+  `/report` interaction: `giveFeedback(58971, 97, 0, "x402", "report", "/report", …)` —
+  [`0x263bfbcc…056f`](https://basescan.org/tx/0x263bfbccdf79967db7db5f6a9f30a5d1ba703faf10f8f832f6d8474d8023056f).
+  `getSummary(58971,[helper])` → (1, 97, 0). Transparency note: rater and ratee are both
+  ours — this is a mechanism walkthrough, not organic third-party reputation.
+- Registry quirk: `getSummary` requires a non-empty `clientAddresses` filter.
+
 ## 2026-07-15 — setAgentWallet + app footprint panel + Sepolia mirror
 
 - **ERC-8004 `setAgentWallet` (mainnet)**: AmberMind #59020 now has a dedicated revenue
