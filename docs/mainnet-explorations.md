@@ -145,6 +145,39 @@ confirmed byte-for-byte as verified `Simple7702Account` on mainnet.
 This is the primitive smart wallets are converging on: an EOA that can batch,
 without deploying a contract account or changing address.
 
+## 12. ENS subname for the agent — `ambermind.evmpirate.base.eth`
+
+The deployer owns `evmpirate.base.eth` in the Basenames **Registry** (`0xB947…5a95`,
+verified), which is a standard ENS registry — so the node owner can mint subnames
+directly, no marketplace involved:
+
+- `setSubnodeRecord(parent, keccak("ambermind"), deployer, L2Resolver, 0)`:
+  [`0xb773bee6…6b85`](https://basescan.org/tx/0xb773bee6c8834f3fc51d96ac0a16668897aa5688a468134ea365744c19cb6b85)
+- records via resolver `multicall` — `addr` → deployer, `url` → the hosted agent card:
+  [`0x12fb1628…c07e`](https://basescan.org/tx/0x12fb16288619dec93f7ba4fcc187f27714b02708523ab0a1edf0aa36b805c07e)
+
+AmberMind is now addressable by name: `ambermind.evmpirate.base.eth` resolves to the
+agent wallet and its `url` record points at the ERC-8004 agent card. Bonus lesson:
+the rapid-sequential-send `nonce too low` failure from Sepolia reproduced on mainnet
+(same load-balanced-RPC root cause as the stale reads).
+
+## 13. EAS revocation — the other half of the attestation lifecycle
+
+Attestations are only trustworthy if their *absence of revocation* is checkable.
+Exercised the full loop on a scratch attestation (the sentinel attestation from §5
+stays untouched):
+
+- attest `("revocation-demo", 0x0)` → UID `0xffe95d39…4029`:
+  [`0x52f0b06c…845d`](https://basescan.org/tx/0x52f0b06c2f98e30f37219a5a5b2573f1f2fe76ed21739907a4eeef588a19845d)
+- `revoke(schema, uid)`:
+  [`0x3a21036c…0444`](https://basescan.org/tx/0x3a21036ce80cf4bbcf6c169c2fbbfedc90c811ce3ea1c0d3294a961ddebd0444)
+- `getAttestation` now returns `revocationTime` 36 s after `time` — the record is
+  permanently marked, not deleted.
+
+Shell lesson for the tooling notes: `UID` is a **readonly variable in bash** — an
+innocent `UID=$(…)` assignment silently keeps the login uid (1000) and downstream
+commands get garbage. Use a different name.
+
 ## Recurring lesson of the day
 
 Four separate times a read **immediately after** a confirmed tx returned
