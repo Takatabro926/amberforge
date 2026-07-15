@@ -13,12 +13,19 @@ import {
 import { base } from "wagmi/chains";
 
 import {
+  AMBERMIND_AGENT_ID,
+  AMBERMIND_ENS,
   AMBR_ADDRESS,
+  ANCHOR_ADDRESS,
   BOARD_ADDRESS,
   CUBES_ADDRESS,
+  REGISTRY_ADDRESS,
+  SENTINEL_ATTESTATION_URL,
   ambrAbi,
+  anchorAbi,
   boardAbi,
   cubesAbi,
+  registryAbi,
 } from "@/lib/contracts";
 import { DATA_SUFFIX } from "@/lib/attribution";
 
@@ -61,6 +68,17 @@ export default function Home() {
     functionName: "minted",
     args: address ? [address] : undefined,
     query: { enabled: !!address },
+  });
+  const { data: anchorRepo } = useReadContract({
+    address: ANCHOR_ADDRESS,
+    abi: anchorAbi,
+    functionName: "REPO",
+  });
+  const { data: agentWallet } = useReadContract({
+    address: REGISTRY_ADDRESS,
+    abi: registryAbi,
+    functionName: "getAgentWallet",
+    args: [AMBERMIND_AGENT_ID],
   });
 
   const { writeContract: cheer, data: cheerTx, isPending: cheering } = useWriteContract();
@@ -230,6 +248,61 @@ export default function Home() {
                 <td className="num">{Number(formatUnits(r.ambr, 18)).toLocaleString()}</td>
               </tr>
             ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="panel">
+        <table>
+          <thead>
+            <tr>
+              <th colSpan={2}>onchain footprint</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>source (read from chain)</td>
+              <td className="num">
+                {anchorRepo ? (
+                  <a href={anchorRepo} target="_blank" rel="noreferrer">
+                    {anchorRepo.replace("https://", "")}
+                  </a>
+                ) : (
+                  "—"
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                anchor contract{" "}
+                <span className="hint">(CREATE2 — same address on any EVM chain)</span>
+              </td>
+              <td className="num">
+                <a
+                  href={`https://basescan.org/address/${ANCHOR_ADDRESS}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {short(ANCHOR_ADDRESS)}
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>agent</td>
+              <td className="num addr">{AMBERMIND_ENS}</td>
+            </tr>
+            <tr>
+              <td>agent revenue wallet (ERC-8004)</td>
+              <td className="num addr">{agentWallet ? short(agentWallet) : "—"}</td>
+            </tr>
+            <tr>
+              <td>first autonomous run</td>
+              <td className="num">
+                <a href={SENTINEL_ATTESTATION_URL} target="_blank" rel="noreferrer">
+                  EAS attestation ↗
+                </a>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
