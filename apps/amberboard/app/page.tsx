@@ -1,16 +1,20 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { formatUnits } from "viem";
 import {
   useAccount,
   useConnect,
   useDisconnect,
+  usePublicClient,
   useReadContract,
   useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { base } from "wagmi/chains";
+
+import { fetchRecentActivity, timeAgo } from "@/lib/activity";
 
 import {
   AMBERMIND_AGENT_ID,
@@ -31,6 +35,62 @@ import { DATA_SUFFIX } from "@/lib/attribution";
 
 function short(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+}
+
+function ActivityFeed({ you }: { you?: string }) {
+  const client = usePublicClient();
+  const { data: items, isLoading } = useQuery({
+    queryKey: ["activity"],
+    queryFn: () => fetchRecentActivity(client!),
+    enabled: !!client,
+    refetchInterval: 60_000,
+  });
+
+  return (
+    <div className="panel">
+      <table>
+        <thead>
+          <tr>
+            <th colSpan={3}>recent activity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {isLoading && (
+            <tr>
+              <td colSpan={3} className="hint">
+                reading logs from chain…
+              </td>
+            </tr>
+          )}
+          {items?.length === 0 && (
+            <tr>
+              <td colSpan={3} className="hint">
+                nothing yet
+              </td>
+            </tr>
+          )}
+          {items?.map((item) => (
+            <tr key={`${item.txHash}-${item.logIndex}`}>
+              <td>
+                {item.kind === "cheer" ? "📣" : "⬢"}{" "}
+                <span className={item.who === you ? "you" : "addr"}>{short(item.who)}</span>
+              </td>
+              <td>
+                <a
+                  href={`https://basescan.org/tx/${item.txHash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {item.detail}
+                </a>
+              </td>
+              <td className="num hint">{timeAgo(item.timestamp)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default function Home() {
@@ -251,6 +311,8 @@ export default function Home() {
           </tbody>
         </table>
       </div>
+
+      <ActivityFeed you={address} />
 
       <div className="panel">
         <table>
