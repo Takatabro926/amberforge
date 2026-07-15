@@ -26,3 +26,22 @@ jobs:
       - name: Test
         run: forge test -vv
         working-directory: contracts
+
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/amberboard/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: apps/amberboard
+
+      - name: Test
+        run: npm test
+        working-directory: apps/amberboard
