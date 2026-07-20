@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
+    "@x402/core": "^2.19.0",
     "next": "^15.4.0",
     "ox": "^1.0.0",
     "react": "^19.0.0",
