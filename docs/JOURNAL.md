@@ -4,6 +4,38 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-20 — Block J: price-aware AmberBoard panels
+
+Three new read-only panels on the board page, no txs — different application
+of price data than dustsweep's Chainlink integration on the evmpirate/0x6
+side (that one prices *allowances at risk*; this one prices *the action
+itself* and a *second token this project already launched*).
+
+- **Live network cost** (`lib/prices.ts`): reuses the exact Chainlink
+  ETH/USD feed address AmberMind's `autonomous.mjs` already verified
+  (`description() == "ETH / USD"`), but for display — current price, base
+  fee, and the live USD cost of calling `cheer()` right now (gas estimate ×
+  base fee × price). Unit-tested against a fake client (feed staleness
+  boundary, missing `baseFeePerGas`).
+- **EMBR market panel** (`lib/embr.ts`): wraps `@flaunch/sdk`'s read-only
+  `createFlaunch({publicClient})` (no `walletClient` needed) —
+  `coinPriceInUSD`, `coinMarketCapInUSD`, `getCoinInfo`, `creatorRevenue`
+  for the EMBR memecoin launched in the 2026-07-17 session. Replaces that
+  session's one-off "revenue=0" check with a live, re-checkable number.
+  Verified against real mainnet data (`RUN_LIVE=1`): price ≈ $1.01e-8, mcap
+  ≈ $1,013 (matches the known $1k-mcap/no-protocol-fee launch), 0 ETH
+  unclaimed — consistent with the original finding.
+- **Rarity badges** (`lib/rarity.ts`): AmberCubes' on-chain SVG (`tokenURI`)
+  is immutable once deployed, so a tiered look for the already-live
+  contract can't happen in Solidity without a new deployment — stayed a
+  pure client-side function instead. Buckets by ratio-to-the-leader's
+  cheer count (not rank index), so ties land in the same tier regardless
+  of array order.
+- **Lesson**: no new contract addresses needed re-verification this
+  block — both the Chainlink feed and the Flaunch SDK's own contract
+  addresses were already established (in `autonomous.mjs` and
+  `flaunch-embr.mjs` respectively), so this block was pure app-layer work.
+
 ## 2026-07-20 — Block I: AmberMind sells its own x402 endpoint (testnet)
 
 AmberMind has only ever been an x402 *buyer* (pay-report.mjs, pay-x402.mjs).
