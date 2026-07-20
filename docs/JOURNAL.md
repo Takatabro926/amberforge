@@ -4,6 +4,42 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-20 — Block I: AmberMind sells its own x402 endpoint (testnet)
+
+AmberMind has only ever been an x402 *buyer* (pay-report.mjs, pay-x402.mjs).
+This block closes the symmetry: `GET /api/insight` on the amberboard app now
+sells a computed on-chain summary (live leaderboard totals, top cheerer,
+cubes minted) for $0.001 USDC, exact-evm scheme, payTo = AmberMind's
+registered ERC-8004 revenue wallet (helper `0x4D0c…fB5a`).
+
+- **Verified end-to-end on Base Sepolia** against a local production build
+  (`next build && next start` — dev mode wasn't tested, no reason to expect
+  the Turbopack hydration issue found elsewhere to apply to a pure API
+  route, but production is what actually ships): tester wallet paid via
+  `pay-insight.mjs`, settlement succeeded, tx
+  [`0x7b5c1c35…1ddf6`](https://sepolia.basescan.org/tx/0x7b5c1c355061a98f27600c2a68885ee75a5e8db6f30dd09610b4b351f031ddf6).
+  Independently confirmed via `cast receipt` rather than trusting the
+  facilitator's own success flag: a real `Transfer(tester → helper, 1000)`
+  log, helper's on-chain USDC balance moved 0 → 1000 atomic units.
+- **Lesson (x402Version/network coupling)**: the installed `@x402/evm`
+  client has two scheme generations — a V1 handler keyed on short network
+  slugs (`"base-sepolia"`, `"base"`) expecting a `maxAmountRequired` field,
+  and a V2 handler keyed on CAIP-2 (`"eip155:*"`) expecting `amount`.
+  Tagging a V2-shaped payload `x402Version: 1` picks the V1 handler, which
+  then crashes on the missing field with an unhelpful `BigInt(undefined)`
+  error. Fix was one field (`x402Version` from `@x402/core`'s own exported
+  constant, not a hardcoded literal) — found by reading the client's own
+  error message, which usefully lists its registered `networks`/`schemes`.
+- **Built on `@x402/core`'s `HTTPFacilitatorClient` directly** rather than
+  the full `x402ResourceServer`/adapter framework in the same package —
+  that framework (route configs, paywall HTML generation, extension hooks)
+  is aimed at multi-route production servers; a single hand-wired route
+  needs only `verify()`/`settle()` plus the header codec functions.
+- **Mainnet deferred**: needs a mainnet-capable facilitator (CDP,
+  `CDP_API_KEY_ID`/`SECRET`) — same open gap already logged for
+  TrailKeeper on the evmpirate/0x6 side, tracked independently here since
+  the two projects don't share credentials or infrastructure.
+
 ## 2026-07-20 — Block H: fork tests, invariant suite, gas-snapshot CI gate
 
 No txs this block — testing/CI depth only, ahead of the next mainnet-touching blocks.
