@@ -4,6 +4,66 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-20 — Block K: AmberDonationHook — a Uniswap v4 hook, on mainnet
+
+The first mechanism neither this wallet (0x23dd, amberforge) nor the
+evmpirate/0x6 wallet had tried: a real Uniswap v4 hook, deployed and proven
+against real swaps on Base mainnet, not just Foundry tests.
+
+**Contracts** (`contracts/src/AmberDonationHook.sol` + `contracts/src/lib/HookMiner.sol`,
+7 Foundry tests via v4-core's own `Deployers` harness, 2 fuzzed): `afterSwap`
+skims `FEE_BPS/10000` of the swapper's output to a treasury address via
+`PoolManager.take()` + a positive returned delta. Every other `IHooks`
+callback is a bare stub, never invoked (only `AFTER_SWAP` +
+`AFTER_SWAP_RETURNS_DELTA` are set in the mined address's flag bits).
+
+**Mainnet, in order**:
+1. Hook deployed via the canonical CREATE2 factory (`contracts/script/DeployDonationHook.s.sol`,
+   mines its own salt with `HookMiner`): `0xF5B4dbc6a25a3E41d4FD3250CD3b6A5764440044`,
+   tx [`0x8bb6f279…480aaa4`](https://basescan.org/tx/0x8bb6f279e344348d2a30cc14bd95604ce94ea8c1d98c0bad1fab42542480aaa4).
+   Treasury = the deployer wallet, **not** AmberBoard — AmberBoard has no
+   withdrawal path for tokens it didn't mint itself, so routing real value
+   there would strand it permanently. feeBps = 20 (0.2%).
+2. New ETH/AMBR pool (1% tier / tickSpacing 200 — distinct from the
+   hookless 0.3% pool in the 2026-07-15 session; the hook address alone
+   would make it a different pool regardless) initialized via POSM: tx
+   [`0x77e3ecd3…7048008`](https://basescan.org/tx/0x77e3ecd3ceabd69f407e60f4d6bcd84f596c8735b507fc77da18e17c97048008).
+   Full-range liquidity minted (~0.00021 ETH + 2.1 AMBR caps), tokenId
+   2864731: tx [`0x22f04e88…2cbac7c`](https://basescan.org/tx/0x22f04e882dde8a3d5a28c192513ea8e0f7d6abd3d93a2669f4a670ac32cbac7c).
+3. `PoolSwapTest` (v4-core's own router, unmodified — the exact contract
+   type the Foundry tests already proved correct) deployed as a minimal
+   swap entry point: `0xA3175A6D033Ad21894BA0DF648c48F684a0Fc715`, tx
+   [`0x854821f2…dff2189fdd`](https://basescan.org/tx/0x854821f2b633862bfa378e10cd270be06774bd650539b925f9c415dff2189fdd).
+4. Real swap, 0.00002 ETH → AMBR: tx
+   [`0x9da630f9…d8eba81`](https://basescan.org/tx/0x9da630f93bab30fec92f73b65371f2ece0d92281c663b96d262113595d8eba81).
+   **Independently verified from the raw receipt logs** (not the script's
+   own printed balance, which itself hit a stale read): the hook's own
+   `Donated(AMBR, 360327570518653)` event fired alongside the swapper's
+   `Transfer(179803457688808007)`, summing to `180163785259326660` wei —
+   exactly matching a fresh `balanceOf` before/after delta, and the skim is
+   exactly 0.2% of the total, as configured.
+
+**Lessons**:
+- v4-core needs `evm_version = "cancun"` (transient storage, EIP-1153).
+  Verified this doesn't move the pre-existing `.gas-snapshot` — nothing
+  else in the repo touches anything version-specific. Adding v4-core *did*
+  still shift the snapshot by a few gas per test: its tighter pragma made
+  forge resolve the whole project to solc 0.8.26 instead of 0.8.30. Same
+  class of gas-drift lesson already logged on the evmpirate/0x6 side, hit
+  here from a dependency's pragma rather than an unpinned CI action.
+- The mint reverted `PoolNotInitialized` on the first attempt, run
+  immediately after a successful init in the same script — the
+  already-documented stale-public-RPC-read issue, not a real bug.
+  Independently re-derived the poolId offline (`cast keccak` on the
+  abi-encoded PoolKey) and matched it byte-for-byte against the
+  `Initialize` event before concluding it was a read-lag issue rather than
+  a key mismatch. Re-simulating a few minutes later confirmed it.
+- `forge create` gotchas (cost two failed dry-runs before a real
+  broadcast): `--constructor-args` is greedy and swallows a following
+  `--rpc-url` if not placed last in the command; the `<path>:<name>`
+  argument wants a real filesystem path (`lib/v4-core/...`), not an import
+  remapping alias (`v4-core/...`).
+
 ## 2026-07-20 — Block J: price-aware AmberBoard panels
 
 Three new read-only panels on the board page, no txs — different application
