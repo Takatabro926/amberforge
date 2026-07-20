@@ -17,6 +17,7 @@ import { base } from "wagmi/chains";
 import { fetchRecentActivity, timeAgo } from "@/lib/activity";
 import { fetchNetworkCost } from "@/lib/prices";
 import { fetchEmbrMarket, EMBR_ADDRESS } from "@/lib/embr";
+import { rarityBadge } from "@/lib/rarity";
 
 import {
   AMBERMIND_AGENT_ID,
@@ -247,6 +248,7 @@ export default function Home() {
         .map((addr, i) => ({ addr, cheers: board[1][i], ambr: board[2][i] }))
         .sort((a, b) => (b.cheers > a.cheers ? 1 : -1))
     : [];
+  const leaderCheers = rows.length > 0 ? Number(rows[0].cheers) : 0;
 
   const cheersNeeded = 3n - (myCheers ?? 0n);
 
@@ -391,7 +393,9 @@ export default function Home() {
             {rows.map((r, i) => (
               <tr key={r.addr}>
                 <td>{i + 1}</td>
-                <td className={r.addr === address ? "you" : "addr"}>{short(r.addr)}</td>
+                <td className={r.addr === address ? "you" : "addr"}>
+                  {rarityBadge(Number(r.cheers), leaderCheers)} {short(r.addr)}
+                </td>
                 <td className="num">{r.cheers.toString()}</td>
                 <td className="num">{Number(formatUnits(r.ambr, 18)).toLocaleString()}</td>
               </tr>
