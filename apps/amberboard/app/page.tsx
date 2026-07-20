@@ -15,6 +15,7 @@ import {
 import { base } from "wagmi/chains";
 
 import { fetchRecentActivity, timeAgo } from "@/lib/activity";
+import { fetchNetworkCost } from "@/lib/prices";
 
 import {
   AMBERMIND_AGENT_ID,
@@ -87,6 +88,51 @@ function ActivityFeed({ you }: { you?: string }) {
               <td className="num hint">{timeAgo(item.timestamp)}</td>
             </tr>
           ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function NetworkCostPanel() {
+  const client = usePublicClient();
+  const { data } = useQuery({
+    queryKey: ["networkCost"],
+    queryFn: () => fetchNetworkCost(client!),
+    enabled: !!client,
+    refetchInterval: 30_000,
+  });
+
+  return (
+    <div className="panel">
+      <table>
+        <thead>
+          <tr>
+            <th colSpan={2}>live network cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ETH / USD (Chainlink)</td>
+            <td className="num">
+              {data ? (
+                <>
+                  ${data.ethUsd.toLocaleString()}
+                  {data.stale && <span className="hint"> (stale, {Math.round(data.feedAgeS / 60)}m old)</span>}
+                </>
+              ) : (
+                "—"
+              )}
+            </td>
+          </tr>
+          <tr>
+            <td>base fee</td>
+            <td className="num">{data ? `${data.baseFeeGwei.toFixed(4)} gwei` : "—"}</td>
+          </tr>
+          <tr>
+            <td>cost to cheer right now</td>
+            <td className="num">{data ? `$${data.cheerCostUsd.toFixed(4)}` : "—"}</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -313,6 +359,8 @@ export default function Home() {
       </div>
 
       <ActivityFeed you={address} />
+
+      <NetworkCostPanel />
 
       <div className="panel">
         <table>
