@@ -39,6 +39,15 @@ registered ERC-8004 revenue wallet (helper `0x4D0c…fB5a`).
   `CDP_API_KEY_ID`/`SECRET`) — same open gap already logged for
   TrailKeeper on the evmpirate/0x6 side, tracked independently here since
   the two projects don't share credentials or infrastructure.
+- **Deployed to prod and re-verified live**: `HELPER_ADDRESS` set as a
+  Vercel production env var, deployed via `takatabro926`/`takatabro927`
+  (separate Vercel login from the evmpirate/0x6 cluster — this machine's
+  CLI session had been on the wrong account, user re-authenticated before
+  deploy). `pay-insight.mjs` against
+  `https://amberforge-board.vercel.app/api/insight` settled for real: tx
+  [`0x9c304e83…8ff95c`](https://sepolia.basescan.org/tx/0x9c304e83b21a12378aae74156ff97eb1f67948d6450f1bcb48496d32528ff95c),
+  helper's on-chain USDC balance 1000 → 2000 atomic units, confirmed via
+  `cast receipt` independent of the app's own success response.
 
 ## 2026-07-20 — Block H: fork tests, invariant suite, gas-snapshot CI gate
 
