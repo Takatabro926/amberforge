@@ -4,6 +4,33 @@ Running log of every meaningful action: date, action, tx hash, lessons learned.
 
 ---
 
+## 2026-07-20 — Block H: fork tests, invariant suite, gas-snapshot CI gate
+
+No txs this block — testing/CI depth only, ahead of the next mainnet-touching blocks.
+
+- **Mainnet fork tests** (`contracts/test/fork/`, `FORK=1 forge test --match-path "test/fork/**"`,
+  pinned to block 48,893,600): read AmberAnchor/AmberBoard/AmberCubes as they actually
+  stand on Base mainnet — decode every minted cube's on-chain `tokenURI`, cross-check
+  `leaderboard()` against `totalCheers`/live AMBR `balanceOf`, confirm the CREATE2 anchor
+  still reports the registered agent ids. Skip cleanly via `vm.skip(true)` in `setUp()`
+  when `FORK` isn't set, so the default offline suite is untouched.
+- **Stateful invariant suite for AmberCubes** (`contracts/test/invariant/`): a handler
+  drives `cheer`/`mintCube`/`transferFrom` from 5 actors and records ghost state (the
+  contracts don't expose "who has ever minted"). 5 invariants incl. minted-count parity,
+  on-chain `minted` flag matching ghost minters, and ownership always matching handler
+  bookkeeping. `runs=64 depth=32 fail_on_revert=true` — the handler swallows the expected
+  `AlreadyMinted`/`NotEnoughCheers` reverts itself so nothing bubbles up.
+  Plus 2 new fuzz tests: mint-id order follows call order (not cheer count), and the mint
+  gate stays locked for every past holder along an arbitrary-length transfer chain.
+- **Gas snapshot baseline** committed (`.gas-snapshot`, excludes `testFuzz`/`invariant`
+  selectors — nondeterministic by design), CI gate `forge snapshot --check`.
+- **CI**: pinned `foundry-toolchain` to v1.7.1 (gas reports have drifted across versions
+  before) and added a separate `contracts-fork` job so a flaky public RPC can never block
+  the fast offline `contracts` job.
+- **Lesson**: querying live state via `cast call` before writing fork-test assertions beat
+  trusting the journal's own historical tx notes — e.g. Cube #1's owner had moved since it
+  was last logged, and hardcoding the old value would have made the test wrong on day one.
+
 ## 2026-07-15 — Agent avatar record + first Sablier stream
 
 - **Avatar on `ambermind.evmpirate.base.eth`**: CAIP-19 pointer at Cube #1
