@@ -5,6 +5,11 @@ libs = ["lib"]
 optimizer = true
 optimizer_runs = 200
 
+[invariant]
+runs = 64
+depth = 32
+fail_on_revert = true
+
 [rpc_endpoints]
 base-sepolia = "https://sepolia.base.org"
 base = "https://mainnet.base.org"
