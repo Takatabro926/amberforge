@@ -117,4 +117,50 @@ contract AmberCubesTest is Test {
         }
         vm.stopPrank();
     }
+
+    function testFuzz_IdOrderFollowsMintCallOrderNotCheerOrder(uint8 firstCheers, uint8 secondCheers) public {
+        uint256 a = bound(firstCheers, 3, 20);
+        uint256 b = bound(secondCheers, 3, 20);
+
+        vm.startPrank(bob);
+        for (uint256 i = 0; i < b; i++) {
+            board.cheer();
+        }
+        vm.stopPrank();
+
+        vm.startPrank(alice);
+        for (uint256 i = 0; i < a; i++) {
+            board.cheer();
+        }
+        vm.stopPrank();
+
+        // alice out-cheered bob but mints second — ids track call order, not cheer count.
+        vm.prank(bob);
+        uint256 bobId = cubes.mintCube();
+        vm.prank(alice);
+        uint256 aliceId = cubes.mintCube();
+
+        assertEq(bobId, 1);
+        assertEq(aliceId, 2);
+    }
+
+    function testFuzz_TransferChainNeverUnlocksASecondMintForAnyHolder(uint8 hops) public {
+        uint256 id = _earnCube(alice);
+        uint256 n = bound(hops, 1, 8);
+
+        address current = alice;
+        for (uint256 i = 0; i < n; i++) {
+            address next = address(uint160(uint256(keccak256(abi.encode("hop", i)))));
+            vm.prank(current);
+            cubes.transferFrom(current, next, id);
+            current = next;
+        }
+        assertEq(cubes.ownerOf(id), current);
+
+        // every past holder along the chain is still gate-locked, even the ones
+        // that no longer own the token and never will again.
+        vm.prank(alice);
+        vm.expectRevert(AmberCubes.AlreadyMinted.selector);
+        cubes.mintCube();
+    }
 }
