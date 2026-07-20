@@ -16,6 +16,7 @@ import { base } from "wagmi/chains";
 
 import { fetchRecentActivity, timeAgo } from "@/lib/activity";
 import { fetchNetworkCost } from "@/lib/prices";
+import { fetchEmbrMarket, EMBR_ADDRESS } from "@/lib/embr";
 
 import {
   AMBERMIND_AGENT_ID,
@@ -132,6 +133,47 @@ function NetworkCostPanel() {
           <tr>
             <td>cost to cheer right now</td>
             <td className="num">{data ? `$${data.cheerCostUsd.toFixed(4)}` : "—"}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function EmbrPanel() {
+  const client = usePublicClient();
+  const { data } = useQuery({
+    queryKey: ["embrMarket"],
+    queryFn: () => fetchEmbrMarket(client!),
+    enabled: !!client,
+    refetchInterval: 60_000,
+  });
+
+  return (
+    <div className="panel">
+      <table>
+        <thead>
+          <tr>
+            <th colSpan={2}>
+              EMBR{" "}
+              <a href={`https://basescan.org/address/${EMBR_ADDRESS}`} target="_blank" rel="noreferrer">
+                (Flaunch)
+              </a>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>price</td>
+            <td className="num">{data ? `$${data.priceUsd.toPrecision(3)}` : "—"}</td>
+          </tr>
+          <tr>
+            <td>market cap</td>
+            <td className="num">{data ? `$${data.marketCapUsd.toLocaleString()}` : "—"}</td>
+          </tr>
+          <tr>
+            <td>unclaimed creator revenue</td>
+            <td className="num">{data ? `${data.unclaimedCreatorRevenueEth} ETH` : "—"}</td>
           </tr>
         </tbody>
       </table>
@@ -361,6 +403,8 @@ export default function Home() {
       <ActivityFeed you={address} />
 
       <NetworkCostPanel />
+
+      <EmbrPanel />
 
       <div className="panel">
         <table>
