@@ -53,6 +53,13 @@ export const cubesAbi = [
     outputs: [{ type: "bool" }],
     stateMutability: "view",
   },
+  {
+    type: "function",
+    name: "nextId",
+    inputs: [],
+    outputs: [{ type: "uint256" }],
+    stateMutability: "view",
+  },
 ] as const;
 
 export const ambrAbi = [
