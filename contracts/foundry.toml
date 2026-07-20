@@ -4,6 +4,11 @@ out = "out"
 libs = ["lib"]
 optimizer = true
 optimizer_runs = 200
+# v4-core uses transient storage (EIP-1153, tload/tstore) — needs Cancun.
+# Base mainnet has been past Cancun since well before this project started,
+# and our other contracts don't use anything version-specific, so this
+# shouldn't move the existing .gas-snapshot (verified below).
+evm_version = "cancun"
 
 [invariant]
 runs = 64
