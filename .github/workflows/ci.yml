@@ -14,6 +14,8 @@ jobs:
           submodules: recursive
 
       - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.7.1
 
       - name: Format check
         run: forge fmt --check src test
@@ -26,6 +28,27 @@ jobs:
       - name: Test
         run: forge test -vv
         working-directory: contracts
+
+      - name: Gas snapshot check
+        run: forge snapshot --check --no-match-test "testFuzz|invariant"
+        working-directory: contracts
+
+  contracts-fork:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.7.1
+
+      - name: Fork tests against Base mainnet
+        run: forge test --match-path "test/fork/**" -vv
+        working-directory: contracts
+        env:
+          FORK: "1"
 
   app:
     runs-on: ubuntu-latest
